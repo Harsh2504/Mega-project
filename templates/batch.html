@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}
+ Batch
+{% endblock title %}
+{% block bv %} onload="getDivisions()" {% endblock bv %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main">
+    <h2>Batch</h2>
+    <p>Click on the element below to open the side navigation menu, and push this content to the right.</p>
+
+  
+    <button id="addButton"  class="btn btn-outline-secondary" type="button">Add</button><br><br>
+
+
+    
+    <div id="formContainer" class="container add-block" style="max-width: 500px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden; display: none;">
+      <form action="/add_batch" method="POST" id="myForm" >
+        <label>Department</label><br>
+        <select name="deptnm" id="deptnm"  onchange="getDivisions()">
+            {% for d in dept %}
+            <option value="{{ d[0] }}">{{ d[1] }}</option>
+            {% endfor %}
+        </select><br>
+        <label>Class</label><br>
+        <select name="clsnm" id="clsnm"  onchange="getDivisions()">
+            {% for c in cls %}
+            <option value="{{ c[0] }}">{{ c[1] }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="divnm">Division</label><br>
+        <select id="divnm" name="divnm" >
+          {% if div %}
+          {% for row in div %}
+              <option value="{{ row[0] }}">{{ row[1] }}</option>
+          {% endfor %}
+          {% else %}
+          <option value="0">none</option>
+          {% endif %}
+        </select>
+        <br>
+        <label>Batch</label><br>
+        <input type="text" class="input" name="batch" id="batch" placeholder="Enter Batch" required><br><br>
+        <input type="submit"  id="ex" class="btn btn-outline-success" value="add"> 
+      </form>
+    </div>
+
+
+    <caption>List of Batches</caption>
+    <table class="table caption-top bord" style="  color:var(--tabel-text-color);">
+    
+      <thead class="tab-dark " >
+        <tr>
+          <th scope="col">Srno.</th>
+          <th scope="col">ID</th>
+          <th scope="col">Department</th>
+          <th scope="col">Class</th>
+          <th scope="col">Division</th>
+          <th scope="col">Batch</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
+         
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in batch %}
+        <tr>
+          <th scope="row">{{loop.index}}</th>
+          <td>{{b[0]}}</td>
+          <td>{{b[1]}}</td>
+          <td>{{ b[2] }}</td>
+          <td>{% if b[3] == "--" %}--{% else %}{{ b[3] }}{% endif %}</td>
+          <td>{{ b[4] }}</td>
+            
+              <td>
+                <form method="post" action="/get_batch_data">
+                  <input type="hidden" name="_id" value="{{ b[0]}}">
+                  <input type="hidden" name="did" value="{{b[1]}}">
+                  <button type="submit" class="btn btn-outline-secondary btn-sm edit">
+                      <i class="fa fa-pencil"></i>
+                  </button>
+              </form>
+              </td>
+              
+              <td>
+                <form action="{{ url_for('delete_batch', _id=b[0]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this batch?');">
+                  <button class="btn btn-outline-danger btn-sm" type="submit">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </form>
+                
+          </td>
+            
+     
+          
+        </tr>
+        {% endfor %}
+        
+          
+        </tr>
+      </tbody>
+    </table>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'success' %}
+         
+                <div class="alert alert-warning" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+   
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+  </div>
+  <script>
+    function getDivisions() {
+        var deptId = document.getElementById('deptnm').value || '1';
+        var clsId = document.getElementById('clsnm').value || '4' ;
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById('divnm').innerHTML = this.responseText;
+            }
+        };
+        xhr.open('GET', '/get-divisions/' + deptId + '/' + clsId, true);
+        xhr.send();
+    }
+    </script>
+<!--main body end--> 
+{% endblock body %}

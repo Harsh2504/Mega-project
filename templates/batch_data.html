@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}
+ User
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main" >
+    <h2 align="center">Update Batch data of {{did}}</h2><br>
+    <div id="editContainer" class="container add-block" style="max-width: 500px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden;">
+      <form action="/set_batch_data" method="POST">
+        <input type="hidden" name="_id" value="{{ data[0] }}">
+        <label>Department</label><br>
+        <select id="department" name="department">
+          {% for d in dept %}
+          <option value="{{d[0]}}" {% if data[1] == d[0] %} selected {% endif %}>{{d[1]}}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <label>Class</label><br>
+        <select id="class" name="class">
+          {% for c in cls %}
+          <option value="{{c[0]}}" {% if data[2] == c[0] %} selected {% endif %}>{{c[1]}}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <label>Division</label><br>
+        <select id="division" name="division">
+          {% if div %}
+          {% for div in div %}
+          <option value="{{div[0]}}" {% if data[4] == div[0] %} selected {% endif %}>{{div[3]}}</option>
+          {% endfor %}
+          {% else %}
+          <option value="0">none</option>
+          {% endif %}
+      
+        </select>
+        <br>
+        <label>Batch</label><br>
+        <input type="text" name="batch" id="batch" value="{{ data[3] }}" required style="width: 50px;"><br>
+        <br>
+        <input type="submit" class="btn btn-outline-success" value="Update" style="margin-right: 20px;"> 
+        <input type="button" class="btn btn-outline-danger" value="Cancel" onclick="location.href='/batch'">
+
+      </form>
+      
+    </div>
+  
+   
+  </div>
+<!--main body end--> 
+{% endblock body %}

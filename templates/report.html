@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}
+  Report
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main">
+    <h2>Report</h2>
+    <p>You can see report analysis here.</p>
+  
+    <div style=" max-width:700px;  margin: 100px auto; background-color: var(--sidebar-color); border-radius: 10px; box-shadow: 0px 0px 100px var(--box-shad);">
+  
+    <form method="post" action="/showreport" target="_blank"  class="container rh" style="display: flex;  padding:20px 50px ;">
+      <p  class="h" > Feedback report :-  </p>
+      <input class="btn btn-outline-danger h4b"  type="submit" value="View Report">
+    </form>
+  
+
+      <form method="post" action="/showcomments" target="_blank"  class="container rh"  style="display: flex;  padding:20px 50px ;">
+        <p  class="h" > General Comments :-  </p>
+
+        <input class="btn btn-outline-danger h4b"  type="submit" value="Show Comments">
+      </form>
+    
+  </div>
+  </div>
+<!--main body end--> 
+{% endblock body %}

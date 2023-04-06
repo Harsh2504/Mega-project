@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}
+ User
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main" >
+    <h2 align="center">Update User Data of {{ data[1] }}</h2><br>
+    <div id="editContainer" class="container add-block" style="max-width: 300px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden;">
+      <form action="/set_cls_data" method="POST">
+        <input type="hidden" name="_id" value="{{ data[0] }}">
+    
+        <label>Class</label><br>
+        <input type="text" name="clsnm" value="{{ data[1] }}" required><br>
+        <label>Abbrevation</label><br>
+        <input type="text" name="clsabbr" value="{{ data[2] }}" required><br>
+        <input type="submit" class="btn btn-outline-success" value="Update" style="margin-right: 20px;"> 
+        <input type="button" class="btn btn-outline-danger" value="Cancel" onclick="location.href='/class'">
+
+      </form>
+      
+    </div>
+  
+   
+  </div>
+<!--main body end--> 
+{% endblock body %}

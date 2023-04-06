@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="icon" href="Images/blackpb.png" type="image/x-icon" sizes="any">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+      <link rel="stylesheet" href="homecss.css">
+      <link rel="stylesheet" href="login.css">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+      <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+      <script src="https://unpkg.com/boxicons@2.1.2/dist/boxicons.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>  
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <title> Student Feedback System</title>
+   <style>
+  body {
+    margin: auto;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: auto;
+    background: linear-gradient(315deg, rgba(101,0,94,1) 3%, rgba(60,132,206,1) 38%, rgba(48,238,226,1) 68%,   rgba(60,132,206,1) 82%, rgba(101,0,94,1) 98%);
+    animation: gradient 15s ease infinite;
+    background-size: 400% 400%;
+    background-attachment: fixed;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 0%;
+    }
+    50% {
+        background-position: 100% 100%;
+    }
+    100% {
+        background-position: 0% 0%;
+    }
+}
+
+.wave {
+    background: rgb(255 255 255 / 25%);
+    border-radius: 1000% 1000% 0 0;
+    position: fixed;
+    width: 300%;
+    height: 20em;
+    animation: wave 10s -3s linear infinite;
+    transform: translate3d(0, 0, 0);
+    opacity: 0.8;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.wave:nth-of-type(2) {
+    bottom: -1.25em;
+    animation: wave 18s linear reverse infinite;
+    opacity: 0.8;
+}
+
+.wave:nth-of-type(3) {
+    bottom: -2.5em;
+    animation: wave 20s -1s reverse infinite;
+    opacity: 0.9;
+}
+
+@keyframes wave {
+    2% {
+        transform: translateX(1);
+    }
+
+    25% {
+        transform: translateX(-25%);
+    }
+
+    50% {
+        transform: translateX(-50%);
+    }
+
+    75% {
+        transform: translateX(-25%);
+    }
+
+    100% {
+        transform: translateX(1);
+    }
+}
+    .vid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background:rgba(0, 0, 0 , 0.5);
+    color: white;
+    font-size: 30px;
+    position: relative;
+    overflow: hidden;
+    min-height: 50vh;
+    }
+    .videosrc{
+    position: absolute;
+    z-index: -1;    
+    top:50%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    }
+   
+    
+   </style>
+  </head>
+  <body>
+    <div class="loading-screen">
+      <img src="{{ url_for('static', filename='images/Loading_icon.gif') }}" alt="Loading">
+   </div>
+
+    <div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+   </div>
+  
+        <div class="container glass content" id="loginform" style="max-width: 400px; height: auto; padding-left: 0; padding-right: 0; overflow:hidden">
+          <div class="vlogin"  style="margin-bottom: 30px; min-height: 200px;">
+            <img src="{{ url_for('static', filename='images/3.png') }}" class="llog animate__animated animate__bounceInRight  animate__slow" style="z-index: 3;">
+            <h1   class=" animate__animated animate__bounceInRight  animate__slow" style="z-index: 3;"><pre >Admin</pre></h1>
+            <video autoplay loop muted class="videolog" >
+              <source src="{{ url_for('static', filename='images/backv.mp4') }}" type="video/mp4">
+          </video>
+          </div>
+          <div class="login" style="margin-left:30px ; margin-right: 30px;" >
+          <form class="f " method="post">
+            
+            <!--<div class="form-group">
+                <label for="email">Username:</label>
+                <input type="text" class="form-control" id="email" placeholder="Enter username" name="email">
+            </div>-->
+            <div class="input-group animate__animated animate__bounceInLeft animate__delay-1s animate__slow">
+                <input  type="text" id="email" placeholder="Enter username" name="email" />
+                <label>Username</label>
+              </div>
+            <!-- <div class="form-group">
+                <label for="pwd">Password:</label>
+                <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+            </div>-->
+            <div class="input-group animate__animated animate__bounceInRight animate__delay-1s animate__slow">
+                <input  type="password" id="pwd" placeholder="Enter password" name="pwd" />
+                <label>Password</label>
+             
+              </div>
+
+            <div class="checkbox animate__animated animate__bounceInUp animate__delay-1s animate__slow ">
+                <label>   <i class="fa fa-eye" style=" transition:1s ease-in; " onclick="toggleVisibility()" id="showPassword"></i>Show Password
+                 </label>
+            </div>
+      
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'empty-error' %}
+                 
+                        <div class="alert alert-warning" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+              
+                    {% elif category == 'auth-error' %}
+              
+                        <div class="alert alert-danger" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+           
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+            <input type="submit" class="btn btn-dark animate__animated animate__zoomInUp animate__delay-2s animate__slow"  id="btn" value='Login' style="margin-left:35%; margin-bottom: 10px;">
+            <br>
+     <!--       <a id="signuplink" style="margin-left:20%;">Click here for Student Login!!!</a>-->
+            </form>
+            </div>
+        </div>
+
+
+
+
+        <div class="container glass form--hidden" id="signupform" style="max-width: 400px; overflow: hidden; height: auto; padding-left: 0; padding-right: 0;">
+            <div class="vlogin"  style="margin-bottom: 30px; min-height: 200px;">
+              <img src="images/3.PNG" class="llog" style="z-index: 3;">
+              <h1   style="z-index: 3;"><pre >Student</pre></h1>
+              <video autoplay loop muted class="videolog" >
+                <source src="images/backv.mp4" type="video/mp4">
+            </video>
+            </div>
+            <div class="login" style="margin-left:30px ; margin-right: 30px; " >
+            <form >
+          
+        
+              <div class="form-group">
+                  <i class="fi fi-rr-home"></i><label for="email">Username:</label>
+                  <input type="text" class="form-control" id="email" placeholder="Enter username" name="email">
+              </div>
+              <div class="form-group">
+                  <label for="pwd">Password:</label>
+                  <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+              </div>
+           
+              <input type=button class="btn btn-success" onClick="parent.location='l.html' " value='Login' style="margin-left:35%; margin-bottom: 10px;">
+              <br>
+              <a id="loginlink" style="margin-left:20%;">Click here for Admin Login!!</a>
+              </form>
+              </div>
+          </div>
+          
+</body> 
+</html>

@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}
+ User
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main">
+    <h2>User</h2>
+    <p>We can add , remove , edit user information here.</p>
+    <button id="addButton"  class="btn btn-outline-secondary" type="button">Add</button><br><br>
+
+    <div id="formContainer" class="container add-block" style="max-width: 450px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden; display: none;">
+      <form action="/add_user" method="POST">
+        <label>Designation :</label><br>
+        <select class="input" name="pre" required  >
+          <option>Mr.</option>
+          <option>Ms.</option>
+          <option>Mrs.</option>
+          <option>Dr.</option>
+        </select><br>
+        <label>Name</label><br>
+        <input type="text" name="name" id=""  minlength="4" pattern="[A-Za-z ]+"  placeholder="like Harsh Patil" required style="width: 250px;"><br>
+        <label>Email</label><br>
+        <input type="text" name="email" id="" placeholder="like abc@gmail.com" required style="width: 250px;"><br>
+        <label>Number</label><br>
+        <input type="number"  name="num" id="" placeholder="like 9892734534"  min="7000000000" max="9999999999"required><br>
+        <label>Password</label><br>
+        <input type="password" minlength="6" name="password" id="" required><br>
+        <label>Access</label><br>
+        <select id="access" name="post">
+          <option value="Admin">Admin</option>
+          <option value="Sub-Admin">Sub-Admin</option>
+        </select><br>
+        <label>Department</label><br>
+        <select id="department" name="department">
+          {% for row in departments %}
+          <option>{{ row[1] }}</option>
+      {% endfor %}
+        </select>
+        <br><br>
+        <input type="submit"  id="ex" class="btn btn-outline-success" value="add"> 
+      </form>
+    </div>
+    
+  
+   
+
+    <caption>List of Users</caption>
+    <table class="table caption-top bord" style="  color:var(--tabel-text-color);">
+    
+      <thead class="tab-dark " >
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">Name</th>
+          <th scope="col">Department</th>
+          <th scope="col">Email</th>
+          <th scope="col">Access</th>
+          <th scope="col">Phone No.</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
+         
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user[0] }}</td>
+          <td>{{ user[1] }}</td>
+          <td>{{ user[2] }}</td>
+          <td>{{ user[3] }}</td>
+          <td>{{ user[4] }}</td>
+          <td>{{ user[5] }}</td>
+  
+              <td>
+                <form method="post" action="/get_user_data">
+                  <input type="hidden" name="_id" value="{{ user[0] }}">
+                  <button type="submit" class="btn btn-outline-secondary btn-sm edit">
+                      <i class="fa fa-pencil"></i>
+                  </button>
+              </form>
+              
+          
+              </td>
+              
+              <td>
+                <form action="{{ url_for('delete_user', id=user[0]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                  <button class="btn btn-outline-danger btn-sm" type="submit">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </form>
+                
+          </td>
+            
+     
+          
+        </tr>
+        {% endfor %}
+        
+          
+        </tr>
+      </tbody>
+    </table>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'success' %}
+         
+                <div class="alert alert-warning" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+   
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+  </div>
+<!--main body end--> 
+{% endblock body %}
+

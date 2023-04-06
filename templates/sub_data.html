@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}
+ User
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main" >
+    <h2 align="center">Update Subject data of {{did}}</h2><br>
+    <div id="editContainer" class="container add-block" style="max-width: 500px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden;">
+      <form action="/set_sub_data" method="POST">
+        <input type="hidden" name="_id" value="{{ data[0] }}">
+    
+        <label>Subject Name :</label><br>
+        <input type="text" name="name" value="{{ data[3] }}" required style="width: 80%;"><br>
+        <label>Abbrevation:</label><br>
+        <input type="text" name="init" value="{{ data[4] }}" required><br>
+        <label>Subject Code:</label><br>
+        <input type="text" name="cd" value="{{ data[6] }}" required><br>
+        
+     
+
+        <br>
+        <input type="submit" class="btn btn-outline-success" value="Update" style="margin-right: 20px;"> 
+        <input type="button" class="btn btn-outline-danger" value="Cancel" onclick="location.href='/subject'">
+
+      </form>
+      <p>You cannot edit Class , Semester , Subject Type or Department!!!</p>
+    </div>
+  
+   
+  </div>
+<!--main body end--> 
+{% endblock body %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}
+ User
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main" >
+    <h2 align="center">Update Division data of {{did}}</h2><br>
+    <div id="editContainer" class="container add-block" style="max-width: 500px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden;">
+      <form action="/set_div_data" method="POST">
+        <input type="hidden" name="_id" value="{{ data[0] }}">
+        <label>Department</label><br>
+        <select id="department" name="department">
+          {% for d in dept %}
+          <option value="{{d[0]}}" {% if data[1] == d[0] %} selected {% endif %}>{{d[1]}}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <label>Class</label><br>
+        <select id="class" name="class">
+          {% for c in cls %}
+          <option value="{{c[0]}}" {% if data[2] == c[0] %} selected {% endif %}>{{c[1]}}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <label>Division</label><br>
+        <select id="division" name="division">
+          <option value="A" {% if data[3] == 'A' %} selected {% endif %}>A</option>
+          <option value="B" {% if data[3] == 'B' %} selected {% endif %}>B</option>
+          <option value="C" {% if data[3] == 'C' %} selected {% endif %}>C</option>
+          <option value="D" {% if data[3] == 'D' %} selected {% endif %}>D</option>
+          <option value="E" {% if data[3] == 'E' %} selected {% endif %}>E</option>
+          <option value="F" {% if data[3] == 'F' %} selected {% endif %}>F</option>
+          <option value="G" {% if data[3] == 'G' %} selected {% endif %}>G</option>
+          <option value="H" {% if data[3] == 'H' %} selected {% endif %}>H</option>
+          <option value="I" {% if data[3] == 'I' %} selected {% endif %}>I</option>
+        </select>
+        <br><br>
+        <input type="submit" class="btn btn-outline-success" value="Update" style="margin-right: 20px;"> 
+        <input type="button" class="btn btn-outline-danger" value="Cancel" onclick="location.href='/divison'">
+
+      </form>
+      
+    </div>
+  
+   
+  </div>
+<!--main body end--> 
+{% endblock body %}

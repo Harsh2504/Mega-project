@@ -1,0 +1,414 @@
+{% extends 'base.html' %}
+{% block title %}
+ Teaching record
+{% endblock title %}
+{% block head %}
+  <style>
+    .hide {
+      display: none;
+    }
+    .hiden {
+      display: none;
+    }
+  </style>
+{% endblock head %}
+{% block bv %}  {% endblock bv %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main">
+    <h2> Teaching record</h2>
+    <p>Click on the element below to open the side navigation menu, and push this content to the right.</p>
+    <button id="addButton"  class="btn btn-outline-secondary" type="button">Add</button><br><br>
+    <div id="formContainer" class="container add-block" style="max-width: 600px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden; display: none;">
+      <form action="/add_trec" method="POST" id="myForm" >
+        <label>Department</label><br>
+        <select name="dept" id="dept"  onchange="getSubjects(); getFaculties(); getDivisionstr();getBatches(); ">
+            {% for d in dept %}
+            <option value="{{ d[0] }}">{{ d[1] }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Semester</label><br>
+        <select name="sem" id="sem" >
+          {% for row in seme %}
+          <option value="{{row[0]}}">{% if row[1] == 1 %}
+            &#8544;
+        {% elif row[1] == 2 %}
+            &#8545;
+        {% elif row[1] == 3 %}
+            &#8546;
+        {% elif row[1] == 4 %}
+            &#8547;
+        {% elif row[1] == 5 %}
+            &#8548;
+        {% elif row[1] == 6 %}
+            &#8549;
+        {% endif %}</option>
+          {% endfor %}
+        </select><br>
+       
+        <label>Class</label><br>
+        <select name="cls" id="cls"  onchange="getDivisionstr()">
+            {% for c in cls %}
+            <option value="{{ c[0] }}">{{ c[1] }}</option>
+            {% endfor %}
+        </select><br>
+       
+        <label>Division</label><br>
+        <select id="dfn" name="dfn" onchange="getBatches()" >
+          {% if dfn %}
+            {% for x in dfn %}
+              <option value="{{ x[0] }}">{{ x[1] }}</option>
+            {% endfor %}
+          {% else %}
+            <option value="">none</option>
+          {% endif %}
+        </select>
+        
+        <br>
+        <label> TH/PR/TUT:</label><br>
+        <select class="input" required id="tp" name="tp" style="height: 30px;" onchange="getSubjects();getBatches();">		
+          	 <option value="1">Theory</option>
+          <option value="2">Practical</option>
+          <option value="3">Tutorial</option>
+</select><br>
+    <label>Batch</label><br>
+    <div id="batchDiv"></div><br>
+
+
+        <label>Subject</label><br>
+        <select name="sub" id="sub" >
+        
+        </select><br>
+
+        <label>Faculty Name</label><br>
+        <select name="fac" id="fac" >
+            {% for f in fac %}
+            <option value="{{ f[0] }}">{{ f[1] }}</option>
+            {% endfor %}
+        </select><br>
+       
+
+
+        
+        <input type="submit"  id="ex" class="btn btn-outline-success" value="add"> 
+      </form>
+    </div>
+
+
+    <div class="form-group" style="display: flex;">
+      <label for="search-input" style="margin: 6px;">Search by:</label>
+      <select id="search-filter" class="form-control" style="width: 20%; margin: 6px;">
+        <option value="faculty">Faculty Name</option>
+        <option value="subject">Subject</option>
+        <option value="stype">Subject Type</option>
+        
+        {% if user == "Admin" %}
+        <option value="department">Department</option>
+        {% endif %}
+      </select>
+      
+      <br>
+      <input type="text" class="form-control" id="search-input" placeholder="Search" style="width: 20%; margin: 6px;">
+  
+            <!-- Add a new button for printing -->
+  <button type="button" class="btn btn-primary btn-sm" style="width: 50px;  margin: 6px;"onclick="printVisibleRows()">Print</button>
+    </div>
+      <div class="form-group" style="display: flex;">
+        <label for="class-filter" style="margin: 6px;">Filter by Class:</label>
+        <select id="class-filter" class="form-control" style="width: 20%; margin: 6px;">
+          <option value="">All</option>
+          <option value="FY">First Year</option>
+          <option value="SY">Second Year</option>
+          <option value="TY">Third Year</option>
+        </select>
+      </div>
+    <caption>List of Teaching record</caption>
+    <table class="table caption-top bord" style="color: var(--table-text-color);">
+    
+      <thead class="tab-dark">
+        <tr>
+          <th scope="col">Srno.</th>
+          <th scope="col">ID</th>
+          <th scope="col">Faculty Name</th>
+          <th scope="col">Subject</th>
+          <th scope="col">Class</th>
+          <th scope="col">Division</th>
+          <th scope="col">Batch</th>
+          <th scope="col">TH/PR/TUT</th>
+          <th scope="col">Department</th>
+
+          <th scope="col">Delete</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in trec %}
+        <tr class="faculty-row" data-class="{{t[4]}}">
+          <th scope="row">{{loop.index}}</th>
+          <td>{{t[0]}}</td>
+          <td>{{t[1]}}{{t[2]}}</td>
+          <td>{{t[3]}}</td>
+          <td>{{t[4]}}</td>
+          <td>{{t[5]}}</td>
+          <td>{{t[6]}}</td>
+          <td>{{t[7]}}</td>
+          <td>{{t[8]}}</td>
+          <td>
+            <form action="{{ url_for('delete_trec', _id=t[0]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this Teaching record?');">
+              <button class="btn btn-outline-danger btn-sm" type="submit">
+                <i class="fa fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'success' %}
+         
+                <div class="alert alert-warning" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+   
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+  </div>
+  <script>
+	window.onload = function() {
+
+		
+			getFaculties();
+      getSubjects();
+      getBatches();
+      getDivisionstr();
+		}
+
+
+
+    function getDivisionstr() {
+        console.log("division")
+        var depttr = document.getElementById('dept').value || '1';
+        var clstr = document.getElementById('cls').value || '4';
+        var xhr = new XMLHttpRequest();
+        	
+      getBatches();
+        xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var div1 = JSON.parse(this.responseText);
+        var dfnSelect = document.getElementById('dfn');
+        dfnSelect.options.length = 0;
+        if (div1.length === 0) {
+            var noneOption = document.createElement('option');
+            noneOption.value = "0";
+            noneOption.text = "none";
+            dfnSelect.add(noneOption);
+        } else {
+            for (var i = 0; i < div1.length; i++) {
+                var option = document.createElement('option');
+                option.value = div1[i][0];
+                option.text = div1[i][1];
+                dfnSelect.add(option);
+            } getBatches();
+        }
+        if (div1.length === 1) {
+                getBatches();
+            }
+
+            if (div1.length === 0) {
+                getBatches();
+            }
+    }
+};
+
+        xhr.open('GET', '/get-divisionstrec/' + depttr + '/' + clstr, true);
+        xhr.send();
+    }
+
+
+    function getFaculties() {
+      console.log("faculties")
+        var deptId = document.getElementById('dept').value || '1' ;
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                var faculties = JSON.parse(this.responseText);
+                var facSelect = document.getElementById('fac');
+                facSelect.innerHTML = '';
+                for (var i = 0; i < faculties.length; i++) {
+                    var option = document.createElement('option');
+                    option.value = faculties[i][0];
+                    option.text = faculties[i][1];
+                    facSelect.appendChild(option);
+                }
+            }
+        };
+        xhr.open('GET', '/get-faculties/' + deptId, true);
+        xhr.send();
+    }
+    
+    function getSubjects() {
+      console.log("subjects")
+    var deptId = document.getElementById('dept').value || '1';
+    var stId = document.getElementById('tp').value || '1';
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var subjects = JSON.parse(this.responseText);
+            var subSelect = document.getElementById('sub');
+            subSelect.innerHTML = '';
+            for (var i = 0; i < subjects.length; i++) {
+                var option = document.createElement('option');
+                option.value = subjects[i][2]; // set the option value to the subject id
+                option.text = subjects[i][0] + ' (' + subjects[i][1] + ')'; // set the option text to name (sub_code)
+                subSelect.appendChild(option);
+            }
+            
+        }
+    };
+    xhr.open('GET', '/get-subjects/' + deptId + '/' + stId, true);
+    xhr.send();
+}
+
+function getBatches() {
+  console.log("batches")
+    var depttr = document.getElementById('dept').value || '1';
+    var clstr = document.getElementById('cls').value || '4';
+    var dfnstr = document.getElementById('dfn').value || '10';
+    var tp = document.getElementById('tp').value || '1';
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var batches = JSON.parse(this.responseText);
+            var batchDiv = document.getElementById('batchDiv');
+            batchDiv.innerHTML = '';
+            if (tp !== '1') {
+                for (var i = 0; i < batches.length; i++) {
+                    var input = document.createElement('input');
+                    input.type = 'checkbox';
+                    input.name = 'batch';
+                    input.value = batches[i][0];
+                    var label = document.createElement('label');
+                    label.innerHTML = batches[i][1];
+                    batchDiv.appendChild(input);
+                    batchDiv.appendChild(label);
+                    batchDiv.appendChild(document.createElement('br'));
+                }
+            } else {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'batch';
+                input.value = '0';
+                batchDiv.appendChild(input);
+                var label = document.createElement('label');
+                label.innerHTML = '---All Batches---';
+                batchDiv.appendChild(label);
+            }
+        }
+    };
+    xhr.open('GET', '/get-batches/' + depttr + '/' + clstr + '/' + dfnstr , true);
+    xhr.send();
+}
+
+
+
+</script>
+    
+<!--main body end--> 
+{% endblock body %}
+{% block script %}
+<script>
+  $(function() {
+    $('#search-input').on('input', function() {
+      var filter = $(this).val().toUpperCase();
+      var searchFilter = $('#search-filter').val();
+      $('.faculty-row').each(function() {
+        var text = '';
+        if (searchFilter === 'faculty') {
+          text = $(this).find('td:nth-child(3)').text().toUpperCase();
+        } else if (searchFilter === 'subject') {
+          text = $(this).find('td:nth-child(4)').text().toUpperCase();
+        } else if (searchFilter === 'stype') {
+          text = $(this).find('td:nth-child(8)').text().toUpperCase();
+        } else if (searchFilter === 'department') {
+          text = $(this).find('td:nth-child(9)').text().toUpperCase();
+        }
+        if (text.indexOf(filter) > -1) {
+          $(this).removeClass('hide');
+        } else {
+          $(this).addClass('hide');
+        }
+      });
+    });
+  });
+
+  $(document).ready(function() {
+  // Filter table by class
+  $('#class-filter').change(function() {
+    var selectedClass = $(this).val();
+    if (selectedClass) {
+      $('.faculty-row').addClass('hiden');
+      $('.faculty-row[data-class="' + selectedClass + '"]').removeClass('hiden');
+    } else {
+      $('.faculty-row').removeClass('hiden');
+    }
+  });
+});
+
+
+function printVisibleRows() {
+  var table = document.querySelector('.table');
+  var visibleRows = table.querySelectorAll('tbody tr:not(.hide):not(.hiden)');
+
+
+  var html = '<table class="table caption-top bord" style="color: var(--table-text-color); " >' +
+    '<thead class="tab-dark">' +
+      '<tr>' +
+        '<th>ID</th>' +
+        '<th>Faculty Name</th>' +
+        '<th>Subject</th>' +
+        '<th>Class</th>' +
+        '<th>Division</th>' +
+        '<th>Batch</th>' +
+        '<th>TH/PR/TUT</th>' +
+        '<th>Department</th>' +
+      '</tr>' +
+    '</thead>' +
+    '<tbody>' +
+    '</tbody>' +
+  '</table>';
+  var div = document.createElement('div');
+  div.innerHTML = html;
+  var tbody = div.querySelector('tbody');
+  for (var i = 0; i < visibleRows.length; i++) {
+    var row = visibleRows[i];
+    var id = row.querySelector('td:nth-child(2)').textContent;
+    var faculty = row.querySelector('td:nth-child(3)').textContent;
+    var subject = row.querySelector('td:nth-child(4)').textContent;
+    var class2 = row.querySelector('td:nth-child(5)').textContent;
+    var div1 = row.querySelector('td:nth-child(6)').textContent;
+    var bat = row.querySelector('td:nth-child(7)').textContent;
+    var thprtut = row.querySelector('td:nth-child(8)').textContent;
+    var department = row.querySelector('td:nth-child(9)').textContent;
+    var newRow = document.createElement('tr');
+    newRow.innerHTML = '<td>' + id + '</td>' +
+      '<td>' + faculty + '</td>' +
+      '<td>' + subject + '</td>' +
+      '<td>' + class2 + '</td>' +
+      '<td>' + div1 + '</td>' +
+      '<td>' + bat + '</td>' +
+      '<td>' + thprtut + '</td>' +
+      '<td>' + department + '</td>';
+    tbody.appendChild(newRow);
+  }
+  var printWindow = window.open('/printt?table_html=' + encodeURIComponent(div.innerHTML), 'Print');
+  printWindow.focus();
+  printWindow.print();
+}
+
+  </script>
+{% endblock script %}

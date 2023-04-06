@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}
+ User
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main" >
+    <h2 align="center">Update Division data of {{did}}</h2><br>
+    <div id="editContainer" class="container add-block" style="max-width: 500px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden;">
+      <form action="/set_fac_data" method="POST">
+        <input type="hidden" name="_id" value="{{ data[0] }}">
+        <label>Designation</label><br>
+        <select id="pre" name="pre">
+          <option value="Mr." {% if data[1] == 'Mr.' %} selected {% endif %}>Mr.</option>
+          <option value="Ms." {% if data[1] == 'Ms.' %} selected {% endif %}>Ms.</option>
+          <option value="Mrs." {% if data[1] == 'Mrs.' %} selected {% endif %}>Mrs.</option>
+          <option value="Dr." {% if data[1] == 'Dr.' %} selected {% endif %}>Dr.</option>
+        </select><br>
+        <label>Faculty Name :</label><br>
+        <input type="text" name="name" value="{{ data[2] }}" required style="width: 80%;"><br>
+        <label>Initial :</label><br>
+        <input type="text" name="init" value="{{ data[3] }}" required><br>
+        <label>Department</label><br>
+        <select id="department" name="department" style="width: 80%;">
+          {% for d in dept %}
+          <option value="{{d[0]}}" {% if data[4] == d[0] %} selected {% endif %}>{{d[1]}}</option>
+          {% endfor %}
+        </select>
+
+        <br><br>
+        <input type="submit" class="btn btn-outline-success" value="Update" style="margin-right: 20px;"> 
+        <input type="button" class="btn btn-outline-danger" value="Cancel" onclick="location.href='/faculty'">
+
+      </form>
+      
+    </div>
+  
+   
+  </div>
+<!--main body end--> 
+{% endblock body %}

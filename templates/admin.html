@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}
+  Home
+{% endblock title %}
+
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main" >
+  
+    <h2 class="animate__animated  animate__fadeInDown animate__slow">Home</h2>
+    <p class="animate__animated animate__fadeInDown animate__slow">You can set date and time and manage feedback here.</p>
+    <form method="POST" class=" container add-block animate__animated animate__fadeInDown animate__slow animate__delay-1s" action="/student_login" style="max-width: 450px; height: auto; padding: 20px 50px; border-radius: 10px; overflow:hidden;">
+      <label for="start_date_time">Start Date and Time:</label>
+      <input type="datetime-local" id="start_date_time" name="start_date_time" value="{{ start_date_time_x }}" required><br><br>
+      <label for="end_date_time">End Date and Time:</label>
+      <input type="datetime-local" id="end_date_time" name="end_date_time" value="{{ end_date_time_x }}" required><br><br>
+      <label for="part">Part of semester:</label>
+      <select id="part" name="part" required>
+       {% if part_x==0 %}
+        <option disabled selected value="">Select the part</option>
+        <option value="1" >Part I</option>
+        <option value="2" >Part II</option>
+        {% else %}
+        <option value="1" {% if part_x == 1 %} selected {% endif %}>Part I</option>
+        <option value="2" {% if part_x == 2 %} selected {% endif %}>Part II</option>
+        {% endif %}
+      </select>    <br>
+      <br>
+      {% if start_date_time_x and end_date_time_x %}
+  <button type="submit" name="action" value="update"  class="btn btn-outline-info">Update</button>
+  <button type="submit" name="action"  value="clear"  class="btn btn-outline-danger">Stop</button>
+  <br><br>
+  <div class="alert alert-warning" role="alert">
+    Feedback is started!!!  Click here to give feedback -----><a href="{{ url_for('student_login') }}" class="alert-link">Student Login Page</a>. 
+  </div>
+{% else %}
+  <input type="submit"  class="btn btn-outline-success" value="Start">
+{% endif %}
+
+    </form>
+
+  
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'success' %}
+         
+                <div class="alert alert-warning" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+   
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+  <div style=" max-width:900px;  margin: 100px auto; background-color: var(--sidebar-color); border-radius: 10px; box-shadow: 0px 0px 100px var(--box-shad);" class="animate__animated animate__fadeInDown animate__delay-1s animate__slow ">
+    <form action="" class="container" style="display: flex;  padding:20px 50px ; " >
+      <p  class="h" >Remove Division , Batch , Teaching Record Data</p>
+      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
+    </form>
+
+    <form action="" class="container" style="display: flex;  padding:20px 50px ;" >
+      <p class="h"  >Remove Faculty Data</p  >
+      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
+    </form>
+    <form action="" class="container" style="display: flex;  padding:20px 50px ;" >
+      <p  class="h"  >Remove Subject Data</p>
+      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
+    </form>
+
+    <form action="" class="container" style="display: flex;  padding:20px 50px ;" >
+      <p  class="h"  >Remove Feedback Report Data</p>
+      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
+    </form>
+  </div>
+  </div>
+<!--main body end--> 
+{% endblock body %}

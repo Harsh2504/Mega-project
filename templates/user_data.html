@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}
+ User
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main" >
+    <h2 align="center">Update User Data of {{ data[1] }} {{data[2]}}</h2><br>
+    <div id="editContainer" class="container add-block" style="max-width: 450px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden;">
+      <form action="/set_data" method="POST">
+        <input type="hidden" name="_id" value="{{ data[0] }}">
+        <label>Designation :</label><br>
+        <select class="input" name="pre" required  >
+          <option value="Mr." {% if data[1] == 'Mr.' %} selected {% endif %}>Mr.</option>
+          <option value="Ms." {% if data[1] == 'Ms.' %} selected {% endif %}>Ms.</option>
+          <option value="Mrs." {% if data[1] == 'Mrs.' %} selected {% endif %}>Mrs.</option>
+          <option value="Dr." {% if data[1] == 'Dr.' %} selected {% endif %}>Dr.</option>
+        </select><br>
+        <label>Name :</label><br>
+        <input type="text" name="name" value="{{ data[2] }}"  minlength="4" pattern="[A-Za-z ]+" required style="width: 250px;"><br>
+        <label>Email :</label><br>
+        <input type="text" name="email" value="{{ data[4] }}" required style="width: 250px;"><br>
+        <label>Number :</label><br>
+        <input type="number" name="num" class="input" value="{{ data[5] }}"  min="7000000000" max="9999999999" required><br>
+        <label>Password :</label><br>
+        <input type="text" name="password" minlength="6" value="{{ data[6] }}" required><br>
+        <label>Access :</label><br>
+        <select id="access" name="access">
+          <option value="Admin" {% if data[7] == 'Admin' %} selected {% endif %}>Admin</option>
+          <option value="Sub-Admin" {% if data[7] == 'Sub-Admin' %} selected {% endif %}>Sub-Admin</option>
+        </select><br>
+        <label>Department :</label><br>
+        <select id="department" name="department">
+             {% for d in dept %}
+          <option value="{{d[0]}}" {% if data[3] == d[0] %} selected {% endif %}>{{d[1]}}</option>
+          {% endfor %}
+        </select>
+        <br><br>
+        <input type="submit" class="btn btn-outline-success" value="Update" style="margin-right: 20px;"> 
+        <input type="button" class="btn btn-outline-danger" value="Cancel" onclick="location.href='/user'">
+
+      </form>
+      
+    </div>
+  
+   
+  </div>
+<!--main body end--> 
+{% endblock body %}

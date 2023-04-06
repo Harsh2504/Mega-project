@@ -1,0 +1,146 @@
+-- phpMyAdmin SQL Dump
+-- version 5.1.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Mar 17, 2023 at 09:44 AM
+-- Server version: 10.4.22-MariaDB
+-- PHP Version: 7.4.27
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `systemdb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facility`
+--
+
+CREATE TABLE `facility` (
+  `id` int(11) NOT NULL,
+  `pre` varchar(10) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `short` varchar(30) NOT NULL,
+  `dept_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `facility`
+--
+
+INSERT INTO `facility` (`id`, `pre`, `name`, `short`, `dept_id`) VALUES
+(41, 'Mr.', 'RAVINDRA P.DHONGADI', 'R.P.DHONGADI', 4),
+(42, 'Ms.', 'RAISA.M.MULLA', 'R.M.MULLA', 4),
+(43, 'Mr.', 'DEEPAK VILAS KAMBLE', 'D.V.KAMBLE', 4),
+(44, 'Ms.', 'MANALI P.THORUSHE', 'M.P.THORUSHE', 4),
+(45, 'Mr.', 'VINAYAK S PAVATE', 'V.S.PAVATE', 4),
+(46, 'Ms.', 'SHRUTI S KOLEKAR', 'S.S.KOLEKAR', 4),
+(47, 'Ms.', 'SWAPNALI C. KORE', 'S.C.KORE', 4),
+(48, 'Mr.', 'BHAGWAN KONDIRAM PATIL', 'B.K.PATIL', 4),
+(49, 'Mr.', 'NITIN SURGONDA PATIL', 'N. S. PATIL', 5),
+(50, 'Mr.', 'SUHAS RAJARAM PATIL', 'S.R.PATIL', 5),
+(51, 'Mr.', 'ASHISH ARVIND PATIL', 'A.A.PATIL', 5),
+(52, 'Mr.', 'PANDURANG MAHADEV PUJARI', 'P.M.PUJARI', 5),
+(53, 'Mr.', 'NITIN S. JADHAV', 'N.S.JADHAV', 5),
+(54, 'Ms.', 'MANALI PRAKASH THORUSHE', 'M. P. THORUSHE', 5),
+(55, 'Mr.', 'PRAVIN B. CHAVAN', 'P.B.CHAVAN', 5),
+(56, 'Mr.', 'NARESH KAMBLE', 'N.A.KAMBLE', 2),
+(57, 'Mr.', 'SAGAR CHAVAN', 'S.V.CHAVAN', 2),
+(58, 'Mr.', 'SURAJ JAMADAR', 'S. S.JAMADAR', 2),
+(59, 'Ms.', 'SWAPNALI SALUNKHE', 'S.A.SALUNKHE', 2),
+(60, 'Mr.', 'DHIRAJ PATIL', 'D.R.PATIL', 2),
+(61, 'Ms.', 'ANITA MIRAJKAR', 'A.D.MIRAJKAR', 2),
+(62, 'Ms.', 'SHRUTI KOLEKAR', 'S.S.KOLEKAR', 2),
+(63, 'Mrs.', 'APURVA UMESH PATIL', 'A.U.PATIL', 1),
+(64, 'Mr.', 'DIPAK VIAS KAMBLE', 'D.V.KAMBLE', 1),
+(65, 'Ms.', 'SAYALI PRAKASH THORUSE', 'S.P.THORUSE', 1),
+(66, 'Ms.', 'ARCHANA SHRIKRISHNA PATIL', 'A.S.PATIL', 1),
+(67, 'Mr.', 'VINIT VISHNU JAKHALEKAR', 'V.V.JAKHALEKAR', 1),
+(68, 'Ms.', 'SHUBHANGI BALASAHEB MAHADIK', 'S.B.MAHADIK', 1),
+(69, 'Mr.', 'MAHESHKUMAR SARJERAO KALE', 'M.S.KALE', 1),
+(70, 'Mr.', 'RANJIT TUKARAM SHIRODKAR', 'R.T.SHIRODKAR', 1),
+(71, 'Mrs.', 'ASHWINI ANIL PATIL', 'A.A.PATIL', 1),
+(72, 'Mr.', 'PANKAJ BALASAHEB GAVALI', 'P.B.GAVALI', 1),
+(73, 'Ms.', 'PRAJAKTA MADHUKAR VIBHUTE', 'P.M.VIBHUTE', 1),
+(74, 'Mr.', 'PRAVIN BHIMRAO CHAVAN', 'P.B.CHAVAN', 1),
+(75, 'Mr.', 'SUSHANT SUKUMAR PATOLE', 'S.S.PATOLE', 1),
+(76, 'Mr.', ' DHAVALE AMIT SHASHIKANT', 'MR.A.S.DHAVALE', 6),
+(77, 'Mrs.', 'GOUSIYA. G. DESAI', 'MRS.G.G.DESAI', 6),
+(78, 'Mr.', 'TELI VISHAL SHIVAJI', 'MR.V.S.TELI', 6),
+(79, 'Mr.', 'AWATI PRATIK SUDHIR', 'MR.P.S.AWATI', 6),
+(80, 'Mr.', 'HINGMIRE TUSHAR MAHADEV', 'MR.T.M.HINGMIRE', 6),
+(81, 'Mr.', 'GHASTE AKASH ANIL', 'MR.A.A.GHASTE', 6),
+(82, 'Mr.', ' PATIL PRASHANT MAHAVIR', 'MR.P.M.PATIL', 6),
+(83, 'Mr.', 'THIKANE SWAPNIL JINENDRA', 'MR.S.J.THIKANE', 6),
+(84, 'Mr.', 'POWAR YOGESH SANJAY', 'MR.Y.S.POWAR', 6),
+(85, 'Mr.', 'ATTAR ARIFMOHAMMAD BABASAHEB', 'MR.A.B.ATTAR', 6),
+(86, 'Mr.', 'KALE MAHESHKUMAR SARJERAO', 'MR.M.S.KALE', 6),
+(87, 'Mr.', 'PATOLE SUSHANT SUKUMAR', 'MR.S.S.PATOLE', 6),
+(88, 'Mrs.', 'VANDHANA R. SHAH', 'V. R. SHAH', 3),
+(89, 'Mr.', 'CHANDRASEN F. RAJEMAHADIK', 'C. F. RAJEMAHADIK', 3),
+(90, 'Mr.', 'VIKAS S. KUMBHAR', 'V. S. KUMBHAR', 3),
+(91, 'Mr.', 'SANDEEP N. PATIL', 'S. N. PATIL', 3),
+(92, 'Mr.', 'MAYURESH B. PATIL', 'M. B. PATIL', 3),
+(93, 'Mr.', 'DHIRAJ R. PATIL', 'D. R. PATIL', 3),
+(94, 'Mr.', 'VINAYAK S. PAVATE', 'V. S. PAVATE', 3),
+(95, 'Ms.', 'ASHLESHA RAJENDRA JANGAM', 'A.R.JANGAM', 1),
+(96, 'Mr.', 'SACHIN JANARDHAN KAMBLE', 'S.J.KAMBLE', 1),
+(97, 'Ms.', 'SHILPA ASHOK KESARKAR', 'S.A.KESARKAR', 1),
+(98, 'Mr.', 'GAFURSO ASHRAF MAKANDAR', 'G.A.MAKANDAR', 1),
+(99, 'Ms.', 'TRUPTI UTTAM PATIL', 'T.U.PATIL', 1),
+(100, 'Mr.', 'SAMADHAN MADHUKAR JADHAV', 'S.M.JADHAV', 1),
+(101, 'Ms.', 'GOUSIYA GULABSAHEB DESAI', 'G.G.DESAI', 1),
+(102, 'Mr.', 'YOGESH SANJAY POWAR', 'Y.S.POWAR', 1),
+(103, 'Mr.', 'LALMOHAMMAD BASHIR MULLA', 'L.B.MULLA', 1),
+(104, 'Mr.', 'PRATIK SUDHIR AWATI', 'P.S.AWATI', 1),
+(105, 'Mr.', 'ARIFMOHAMMAD BABASAHEB ATTAR', 'A.B.ATTAR', 1),
+(106, 'Mr.', 'AKASH ANIL GASTE', 'A.A.GASTE', 1),
+(107, 'Mr.', 'VISHAL SHIVAJI TELI', 'V.S.TELI', 1),
+(108, 'Mr.', 'SHAVIER MARIAN DSOUZA', 'S.M.DSOUZA', 1);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `facility`
+--
+ALTER TABLE `facility`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dept_id` (`dept_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `facility`
+--
+ALTER TABLE `facility`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `facility`
+--
+ALTER TABLE `facility`
+  ADD CONSTRAINT `facility_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `department` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

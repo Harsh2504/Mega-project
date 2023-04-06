@@ -1,0 +1,188 @@
+{% extends 'basefeedback.html' %}
+{% block title %}
+  Feedback
+{% endblock title %}
+{% block body %}
+    
+    
+
+<!--main body --> 
+<div id="main">
+  
+  
+  <h2>Feedback</h2>
+  <p>Click on the element below to open the side navigation menu, and push this content to the right.</p>
+<!--hidden values --> 
+<form action="/add_feed" method="post" >
+  <input type="hidden" name="div_id" value="{{ ddid }}">
+  <input type="hidden" name="dept_id" value="{{ did }}">
+  <input type="hidden" name="cls_id" value="{{ cid }}">
+  <input type="hidden" name="qnum" id="qnum" value="{{ qnum }}">
+  <input type="hidden" name="fanum" id="fanum" value="{{ fanum }}">
+{% for record in fa %}
+    <input type="hidden" value="{{ record[4] }}" name="fa{{ loop.index }}">
+{% endfor %}
+
+
+<!--questions -->
+<ul class="nav nav-tabs">
+  {% for q in que %}
+    <li class="nav-item" id="qi{{loop.index}}">
+      <a class="nav-link{% if loop.index == 1 %} active{% endif %}{% if loop.index > 1 %} disabled{% endif %}" data-toggle="tab" href="#tab{{ loop.index }}">Q{{ loop.index }}</a>
+    </li>
+  {% endfor %}
+  <li class="nav-item">
+    <a class="nav-link{% if que|length == 1 %} active{% endif %}{% if que|length > 1 %} disabled{% endif %}" data-toggle="tab" href="#tab-comments">Comments</a>
+  </li>
+  <li>
+  <!--<div id="google_translate_element"></div></li>-->
+
+</ul>
+
+ <br> 
+  <div class="tab-content">
+    {% for q_idx in range(1, que|length+1) %}
+      <div class="tab-pane fade{% if loop.index == 1 %} show active{% endif %}" id="tab{{ loop.index }}" role="tabpanel" style="font-size: 20px;">
+        <b>Q{{loop.index}}.{{ que[q_idx-1][1] }}</b><br>
+    A) {{que[q_idx-1][2]}}<br>
+    B) {{que[q_idx-1][3]}}<br>
+    C) {{que[q_idx-1][4]}}<br>
+    D) {{que[q_idx-1][5]}}<br>
+<br>
+
+        <table class="table caption-top bord table-bordered " style="  color:var(--tabel-text-color); font-size: 16px;" >
+    
+          <thead class="tab-dark " >
+            <tr >
+              <th scope="col">Faculty Name</th>
+              <th scope="col">Subject</th>
+              <th scope="col">Subject Type</th>
+              <th scope="col">Options</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            {% for r_idx in range(1, fa|length+1) %}
+            <tr>
+              
+              <td>{{fa[r_idx-1][0]}}{{fa[r_idx-1][1]}}</td>
+              <td>{{fa[r_idx-1][2]}}</td>
+              <td>{{ fa[r_idx-1][3] }}</td>
+              <td class="d-flex sgp-point">
+                <div class="flex-grow-1">A.<input class="w3-radio sgp-pointer" style="margin-right: 10px;margin-top: -5px;" type="radio" required value="A" name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o1"></div>
+                <div class="flex-grow-1">B.<input class="w3-radio sgp-pointer" style="margin-right: 10px;margin-top: -5px;" type="radio" required value="B"  name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o2"></div>
+                <div class="flex-grow-1">C.<input class="w3-radio sgp-pointer" style="margin-right: 10px;margin-top: -5px;" type="radio" required value="C"  name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o3"></div>
+                <div class="flex-grow-1">D.<input class="w3-radio sgp-pointer" style="margin-right: 10px;margin-top: -5px;" type="radio" required value="D"  name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o4"></div>
+            </td> 
+            </tr>
+            {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-center">
+        {% if  q_idx  < 10 %}
+        <button class="btn btn-outline-dark" style="width: 200px;" type="button" onclick="activateNextTab(this)" data-target="#tab{{ q_idx + 1 }}">Next</button>
+
+        {% else %}
+        <button class="btn btn-outline-dark" style="width: 200px;" type="button" onclick="activateComTab(this)" data-target="#tab-comments">Next</button>
+        {% endif %}
+      </div>
+      </div>
+    {% endfor %}
+    <div class="tab-pane fade" id="tab-comments" role="tabpanel">
+      Comments section<br>
+      <textarea name="co" style="margin-left: 10px;" rows="6" class="comment" maxlength="200" required></textarea><br>
+      <input class="btn btn-success" type="submit" value="Submit" >
+    </div>
+  </div>
+</form>
+    
+  </div>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script >
+
+
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,mr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+
+function changeLanguage(lang) {
+  if (lang === 'en') {
+    // Set the language to English
+    new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,hi', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+  } else if (lang === 'hi') {
+    // Set the language to Hindi
+    new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,hi', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, autoDisplay: false}, 'google_translate_element');
+    setTimeout(function(){
+      var select = document.querySelector('.goog-te-combo');
+      select.value = 'hi';
+      select.dispatchEvent(new Event('change'));
+    }, 0);
+  }
+}
+
+  function activateNextTab(button) {
+    // Get the ID of the next tab
+    var nextTabId = button.getAttribute("data-target");
+  
+    // Get the index of the current tab
+    var currentTabIndex = parseInt(button.closest(".tab-pane").id.slice(3));
+
+    var fanumInput = document.getElementById("fanum");
+
+// Get the value of the "fanum" input
+var fanumValue = fanumInput.value;
+
+// Log the value of "fanum" to the console
+for(j =1 ; j <=fanumValue ;j++ ){
+    // Get the radio button group corresponding to the current question
+    var radioGroupName = "q" + currentTabIndex + "f" + j;
+    var radioGroup = document.getElementsByName(radioGroupName);
+  
+    // Check if the radio button group has a value
+    var hasValue = false;
+    for (var i = 0; i < radioGroup.length; i++) {
+      if (radioGroup[i].checked) {
+        hasValue = true;
+        break;
+      }
+    }
+}
+    // If the radio button group does not have a value, display an error message and do not navigate to the next tab
+    if (!hasValue) {
+      alert("Please give feedback for all faculties in question " + currentTabIndex);
+      return;
+    }
+  
+    // Remove the "disabled" class from the next tab link
+    var nextTabLink = document.querySelector('a[href="'+nextTabId+'"]');
+    nextTabLink.classList.remove("disabled");
+  
+    // Click the next tab link to navigate to it
+    nextTabLink.click();
+  }
+  
+  function activateComTab(button) {
+    // Get the ID of the next tab
+    var nextTabId = button.getAttribute("data-target");
+  
+    // Remove the "disabled" class from the next tab link
+    var nextTabLink = document.querySelector('a[href="'+nextTabId+'"]');
+    nextTabLink.classList.remove("disabled");
+  
+      // Click the next tab link to navigate to it
+      nextTabLink.click();
+  }
+
+
+        window.history.forward();
+        function noBack() {
+            window.history.forward();
+        }
+   
+  
+  </script>
+
+<!--main body end--> 
+{% endblock body %}

@@ -1,0 +1,28 @@
+{% extends 'basefeedback.html' %}
+{% block title %}
+  Feedback
+{% endblock title %}
+{% block body %}
+    
+    
+
+<!--main body --> 
+<div id="main">
+  
+  
+
+
+
+<!--questions -->
+
+{% for q_idx in range(1, que|length+1) %}
+    {% for r_idx in range(1, fa|length+1) %}
+        q{{ q_idx }} f{{ r_idx }}<br>   <!-- Print the index of q and r -->
+    {% endfor %}
+{% endfor %}
+
+  
+    
+  </div>
+<!--main body end--> 
+{% endblock body %}

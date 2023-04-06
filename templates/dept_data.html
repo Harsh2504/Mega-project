@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}
+ User
+{% endblock title %}
+{% block body %}
+    
+
+<!--main body --> 
+<div id="main" >
+    <h2 align="center">Update Department Data of {{ data[1] }}</h2><br>
+    <div id="editContainer" class="container add-block" style="max-width: 450px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden;">
+      <form action="/set_dept_data" method="POST">
+        <input type="hidden" name="_id" value="{{ data[0] }}">
+        <label>Department</label><br>
+        <input type="text" name="deptnm" value="{{ data[1] }}" required  style="width: 350px;"><br>
+        <label>Abbrevation</label><br>
+        <input type="text" name="deptabbr" value="{{ data[2] }}" required style="width: 50px;"><br>
+        <input type="submit" class="btn btn-outline-success" value="Update" style="margin-right: 20px;"> 
+        <input type="button" class="btn btn-outline-danger" value="Cancel" onclick="location.href='/department'">
+
+      </form>
+      
+    </div>
+  
+   
+  </div>
+<!--main body end--> 
+{% endblock body %}
