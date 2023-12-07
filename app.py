@@ -1,13 +1,31 @@
 from bson import ObjectId
 from flask import Flask, render_template, Markup, request, redirect, session, flash, url_for,send_from_directory, make_response
 import pandas as pd
+import secrets
+import string
 from datetime import datetime
 import mysql.connector
+import subprocess
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 # Connect to the MongoDB server and access the "Users" collection
 # Connect to the MySQL server and access the "users" table
+
+
+#import os
+#import psycopg2
+#
+#conn = psycopg2.connect(os.environ["DATABASE_URL"])
+
+#with conn.cursor() as cur:
+#    cur.execute("SELECT now()")
+#    res = cur.fetchall()
+#    conn.commit()
+#    print(res)
+
+
+
 mydb = mysql.connector.connect(
       host="localhost",
       user="root",
@@ -22,8 +40,16 @@ did = None
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+    mydb = mysql.connector.connect(
+      host="localhost",
+      user="root",
+      password="",
+      database="systemdb"
+    )
+
     global post_value
     global did
+    session['logged_in'] = False  
     if request.method == 'POST':
         user=post_value
         email = request.form['email']
@@ -61,16 +87,22 @@ def home():
     if 'logged_in' in session and session['logged_in']:
         
         user=post_value
-      
+        mydb.commit()
         mycursor = mydb.cursor()
-        sql = "SELECT s_time, e_time ,part FROM works WHERE work = 'feedback'"
+        sql = "SELECT s_time, e_time ,part,code FROM works WHERE work = 'feedback'"
         mycursor.execute(sql)
         result = mycursor.fetchone()
+
+
+
+
+
         if result:
         # Convert the date and time strings to datetime objects
             start_date_time_st = result[0]
             end_date_time_st = result[1]
             part_x = result[2]
+            code1=result[3]
             try:
                 start_date_time_x = start_date_time_st.isoformat()
                 end_date_time_x = end_date_time_st.isoformat()
@@ -78,11 +110,34 @@ def home():
             # Handle the exception here
                 start_date_time_x = None
                 end_date_time_x = None
-        return render_template('admin.html',user=user,start_date_time_x=start_date_time_x,end_date_time_x=end_date_time_x,part_x=part_x)
+        return render_template('admin.html',user=user,start_date_time_x=start_date_time_x,end_date_time_x=end_date_time_x,part_x=part_x,cod=code1)
         
     else:
         return redirect('/')
     
+@app.route('/backup', methods=['POST'])
+def backup():
+    db_name = 'systemdb'
+    file_name = db_name + '.sql'
+   
+
+    mydb = mysql.connector.connect(
+         host="localhost",
+         user="root",
+         password=""
+    )
+
+
+
+   
+
+    
+    # Run mysqldump command to export database to file
+    #subprocess.call(['D:\\xampp2\\mysql\\bin\\mysqldump', '-u', 'root', '--password=',"", '--databases',db_name, '--result-file=' + file_name])
+
+
+    return redirect('/admin')
+
 
 @app.route('/print1')
 def print1():
@@ -151,11 +206,22 @@ def student_login():
             # Convert the date and time strings to datetime objects
             start_date_time = datetime.strptime(start_date_time_str, '%Y-%m-%dT%H:%M')
             end_date_time = datetime.strptime(end_date_time_str, '%Y-%m-%dT%H:%M')
+            alphabet = string.ascii_lowercase
+            symbol = "&@#!"
+            digits = string.digits
+
+            while True:
+                code = ''.join([secrets.choice(digits) if i == 2 or i == 5 else secrets.choice(symbol) if i == 3 else secrets.choice(alphabet) for i in range(7)])
+                if sum(c.isdigit() for c in code) == 2 and sum(c in symbol for c in code) == 1:
+                    code = code.capitalize()
+                    break
+
+            print(code)            
             # Update the start and end date and time values in the database
             mycursor = mydb.cursor()
             status = 'start'
-            sql = "UPDATE works SET s_time = %s, e_time = %s,status=%s,part=%s WHERE work = 'feedback'"
-            val = (start_date_time, end_date_time,status,part_str)
+            sql = "UPDATE works SET s_time = %s, e_time = %s,status=%s,part=%s,code=%s WHERE work = 'feedback'"
+            val = (start_date_time, end_date_time,status,part_str,code)
             mycursor.execute(sql, val)
             mydb.commit()
             # Redirect to the same URL to show the student login page with updated values
@@ -163,11 +229,31 @@ def student_login():
             session['start_date_time'] = start_date_time.isoformat()
             session['end_date_time'] = end_date_time.isoformat()
             # Redirect to the same URL to show the student login page with updated values
+
+            
             return redirect('/admin')
 
     else:
         
-           # Check if the start and end date and time values are already in the database
+
+            if 'st_logged_in' in session and session['st_logged_in']:  
+                    mycursor = mydb.cursor()
+                    mycursor.execute("SELECT * FROM class")
+                    cls = mycursor.fetchall()
+                    mycursor = mydb.cursor()
+                    mycursor.execute("select id,dept_name from department")
+                    dept = mycursor.fetchall()
+                    mycursor = mydb.cursor()
+                    mycursor.execute("select part from works WHERE work = 'feedback'")
+                    part_x = mycursor.fetchone()
+                    print("hahaha",part_x)
+                    
+                    return render_template('student_login.html',dept=dept,cls=cls,part_x=part_x)
+            else:
+                return render_template('codever.html')
+
+@app.route('/student_verify')
+def student_verify():
         mycursor = mydb.cursor()
         sql = "SELECT s_time, e_time FROM works WHERE work = 'feedback'"
         mycursor.execute(sql)
@@ -190,24 +276,57 @@ def student_login():
                 current_time = datetime.now()
                 if start_date_time <= current_time <= end_date_time:
                    
-                    mycursor = mydb.cursor()
-                    mycursor.execute("SELECT * FROM class")
-                    cls = mycursor.fetchall()
-                    mycursor = mydb.cursor()
-                    mycursor.execute("select id,dept_name from department")
-                    dept = mycursor.fetchall()
-                    mycursor = mydb.cursor()
-                    mycursor.execute("select part from works WHERE work = 'feedback'")
-                    part_x = mycursor.fetchone()
-                    print("hahaha",part_x)
-                    
-                    return render_template('student_login.html',dept=dept,cls=cls,part_x=part_x)
+                    session['st_logged_in'] = False
+                    flash('Enter Login Code above.', 'success')  
+                    return render_template('codever.html')
 
         return render_template('error.html')
+    
+@app.route('/verify', methods=['POST'])
+def verify():
 
+    if request.method == 'POST':
+        incod = request.form['cod']
+        mycursor =mydb.cursor()
+        mycursor.execute("Select code from works WHERE work = 'feedback'")
+        dbcod=mycursor.fetchone()
+        print("db",dbcod)
+        if not incod :
+              flash('Enter Login Code to Give Feedback.', 'success')
+              return render_template('codever.html')
+        else:      
+            if incod == dbcod[0]:           
+               
+                session['st_logged_in'] = True     
+                return redirect('/student_login')
+            else:
+                flash('Login Code is incorrect.', 'success')
+                return render_template('codever.html')
         
+@app.route('/reload')
+def reload():
+        if 'logged_in' in session and session['logged_in']:
+            alphabet = string.ascii_lowercase
+            symbol = "&@#!"
+            digits = string.digits
 
- 
+            while True:
+                code = ''.join([secrets.choice(digits) if i == 2 or i == 5 else secrets.choice(symbol) if i == 3 else secrets.choice(alphabet) for i in range(7)])
+                if sum(c.isdigit() for c in code) == 2 and sum(c in symbol for c in code) == 1:
+                    code = code.capitalize()
+                    break
+
+            print(code)            
+            # Update the start and end date and time values in the database
+            mycursor = mydb.cursor()
+           
+            mycursor.execute("UPDATE works SET code=%s WHERE work = 'feedback'",(code,))
+            mydb.commit()
+            return redirect('/admin')
+
+
+
+
 @app.route('/department')
 def department():
     global post_value
@@ -447,6 +566,7 @@ def teaching():
 def questions():
     global post_value
     if 'logged_in' in session and session['logged_in']:
+        mydb.commit()
         user=post_value
         mycursor = mydb.cursor()
         mycursor.execute("SELECT * FROM que")
@@ -488,7 +608,107 @@ def letter():
     global post_value
     if 'logged_in' in session and session['logged_in']:
         user=post_value
-        return render_template('letter.html', user=user)
+        ##########Appreciation letter
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT * FROM department")
+        departments = mycursor.fetchall()
+        fin =[]
+        for d in departments:
+            dept = []
+            did = d[0]
+            dept.append(did)
+            dept.append(d[1])
+            mycursor.execute("SELECT DISTINCT(fac_id) as fid FROM teaching_rec where dept_id=%s ORDER by dept_id,fac_id",(did,))
+            fac = mycursor.fetchall()
+            fac1 =[]
+            
+            for f in fac:
+                fid = f[0]
+                teach=[]
+                fnm=[]
+              #  print("fid " , fid)
+                mycursor.execute("select * from facility where id=%s",(fid,))
+                facd = mycursor.fetchall()
+                for fc in facd:
+                    facnm = fc[1] + " " +fc[2]
+                    facid = fc[0] 
+                    fnm.append(facid)
+                    fnm.append(facnm)
+                
+                mycursor.execute("select id from teaching_rec where dept_id=%s and fac_id=%s ORDER by dept_id,fac_id",(did,fid))
+                teachd = mycursor.fetchall()
+                #print(facnm," ",teachd)
+                for t in teachd:
+                    #print(t)
+                    tid = t[0]
+                   
+                    mycursor.execute("select teach_id from sgp where teach_id=%s and avg>=7", (tid,))
+
+                    ft = mycursor.fetchall()
+                    
+                    if ft:
+                        teach.append(ft)
+                #print(teach)
+                fnm.append(teach)
+                if teach:
+                    fac1.append(fnm)
+            dept.append(fac1)        
+            #print(fac1)
+            fin.append(dept)       
+        #print(fin)
+
+
+        ##########Suggestion letter
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT * FROM department")
+        departments = mycursor.fetchall()
+        fin1 =[]
+        for d in departments:
+            dept1 = []
+            did = d[0]
+            dept1.append(did)
+            
+            dept1.append(d[1])
+            mycursor.execute("SELECT DISTINCT(fac_id) as fid FROM teaching_rec where dept_id=%s ORDER by dept_id,fac_id",(did,))
+            fac = mycursor.fetchall()
+            fac12 =[]
+            
+            for f in fac:
+                fid = f[0]
+                teach1=[]
+                fnm1=[]
+              #  print("fid " , fid)
+                mycursor.execute("select * from facility where id=%s",(fid,))
+                facd = mycursor.fetchall()
+                for fc in facd:
+                    facnm = fc[1] + " " +fc[2] 
+                    facid = fc[0] 
+                    fnm1.append(facid)
+                    fnm1.append(facnm)
+                    
+                
+                mycursor.execute("select id from teaching_rec where dept_id=%s and fac_id=%s ORDER by dept_id,fac_id",(did,fid))
+                teachd = mycursor.fetchall()
+                #print(facnm," ",teachd)
+                for t in teachd:
+                    #print(t)
+                    tid = t[0]
+                   
+                    mycursor.execute("select teach_id from sgp where teach_id=%s and avg<7", (tid,))
+
+                    ft = mycursor.fetchall()
+                    
+                    if ft:
+                        teach1.append(ft)
+                #print(teach)
+                fnm1.append(teach1)
+                if teach1:
+                    fac12.append(fnm1)
+            dept1.append(fac12)        
+            #print(fac1)
+            fin1.append(dept1)       
+        #print(fin)
+        return render_template('letter.html', user=user,final=fin,finalsl=fin1)
     else:
         return redirect('/') 
 
@@ -989,7 +1209,7 @@ def set_fac_data():
     cursor.close()
     return redirect('/faculty')
 
-@app.route('/download-file')
+@app.route('/download_file')
 def download_file():
     return send_from_directory('static/files', 'faculty.xlsx', as_attachment=True)
 
@@ -1404,7 +1624,11 @@ def add_feed():
 @app.route('/thankyou')
 def thankyou():
     # Disable browser caching for the response
-    return render_template('thankyou.html')
+    if 'st_logged_in' in session and session['st_logged_in']:
+        session['st_logged_in'] = False 
+        return render_template('thankyou.html')
+    else:
+         return redirect('/student_verify')
 #########################feedback end ###########################
 @app.route('/showreport', methods=['POST'])
 def showreport():
@@ -1503,17 +1727,17 @@ def showreport():
         cursor = mydb.cursor()
         query = '''
     SELECT d.dept_name, f.name,  c.short, dv.division, s.name_s , tr.t_p, 
-ROUND(rushi.q1, 2) as q1, ROUND(rushi.q2, 2) as q2, ROUND(rushi.q3, 2) as q3, 
-ROUND(rushi.q4, 2) as q4, ROUND(rushi.q5, 2) as q5, ROUND(rushi.q6, 2) as q6, 
-ROUND(rushi.q7, 2) as q7, ROUND(rushi.q8, 2) as q8, ROUND(rushi.q9, 2) as q9, 
-ROUND(rushi.q10, 2) as q10, ROUND(rushi.avg, 2) as avg
+ROUND(sgp.q1, 2) as q1, ROUND(sgp.q2, 2) as q2, ROUND(sgp.q3, 2) as q3, 
+ROUND(sgp.q4, 2) as q4, ROUND(sgp.q5, 2) as q5, ROUND(sgp.q6, 2) as q6, 
+ROUND(sgp.q7, 2) as q7, ROUND(sgp.q8, 2) as q8, ROUND(sgp.q9, 2) as q9, 
+ROUND(sgp.q10, 2) as q10, ROUND(sgp.avg, 2) as avg
 FROM teaching_rec tr
 JOIN facility f ON tr.fac_id = f.id
 JOIN department d ON tr.dept_id = d.id
 JOIN class c ON tr.cd_id = c.id
 LEFT JOIN division dv ON tr.div_id = dv.id
 JOIN subject s ON tr.sub_id = s.id
-JOIN rushi ON tr.id = rushi.teach_id
+JOIN sgp ON tr.id = sgp.teach_id
 GROUP BY f.name
 ORDER BY d.dept_name, f.name, c.short, dv.division, s.name_s
     '''
@@ -1598,34 +1822,408 @@ def showcomments():
                             deptlist.append(comment)
                 finalcom.append(deptlist)
         #print(finalcom)                 
-        return render_template('comments.html',com=finalcom)
+        return render_template('comments.html', com=finalcom)
+    else:
+        return redirect('/')
+
+
+#####################Letter codes###############################
+
+@app.route('/letdown', methods=['POST'])
+def letdown ():
+    global post_value
+    if 'logged_in' in session and session['logged_in']:
+        import datetime
+        if request.method == 'POST':
+            did=request.form['depart']
+            fid = request.form['facid']
+
+
+            cursor = mydb.cursor()
+            cursor.execute("SELECT dept_name FROM department WHERE id = %s", (did,))
+            row = cursor.fetchall()
+            deptnm=row[0]
+            mycursor = mydb.cursor()
+            mycursor.execute("select * from facility where id=%s",(fid,))
+            facd = mycursor.fetchall()
+            for fc in facd:
+                facnm = fc[1] + " " +fc[2]
+                facnms = fc[1] + " " + fc[3]
+            mycursor.execute("select id from teaching_rec where dept_id=%s and fac_id=%s ORDER by dept_id,fac_id",(did,fid))
+            teachd = mycursor.fetchall()
+            #print(facnm," ",teachd)
+            ctid = []
+            for t in teachd:
+                #print(t)
+                tid = t[0]
+                   
+                mycursor.execute("select teach_id ,avg from sgp where teach_id=%s and avg>=7", (tid,))
+
+                fteach = mycursor.fetchall()
+                if fteach:
+                    ctid.append(fteach[0])
+                    
+                
+          
+            trec_list = []
+            res =[]
+            rem=[]  
+            for x in ctid:
+                   xid = x[0]
+                
+                   mycursor.execute("SELECT teaching_rec.id as tid,facility.pre as fpre,facility.name as fname,subject.name_s as sname,class.short as cls,teaching_rec.div_id as did,teaching_rec.bat_id as bid,teaching_rec.t_p as tp,department.dept_s as dept,subject.name as aname FROM teaching_rec,department,facility,class,subject where teaching_rec.dept_id=department.id AND teaching_rec.cd_id=class.id AND  teaching_rec.sub_id=subject.id AND teaching_rec.fac_id=facility.id AND teaching_rec.id = %s",(xid,))
+                   trec = mycursor.fetchall()
+                  
+                        
+                   #Excellent , good ,average 
+
+                   for row in trec:
+                       
+                        
+                        if str(row[5]) == "0":
+                            
+                            if row[7]=="theory":
+                                trec_list.append((row[0], row[1], row[2], row[3],row[4],"no division", row[6],"TH",row[8],row[9]))
+                            elif row[7]=="practical":
+                                trec_list.append((row[0], row[1], row[2], row[3],row[4],"no division", row[6],"PR",row[8],row[9]))
+                            else:
+                                trec_list.append((row[0], row[1], row[2], row[3],row[4],"no division", row[6],"TH",row[8],row[9]))
+                        else:
+                            idd = row[5]
+                            cursor2 = mydb.cursor()
+                            cursor2.execute("SELECT division FROM division WHERE id=%s", (idd,))
+                            info2 = cursor2.fetchall()
+                            cursor2.close()
+                            for row1 in info2:
+                                if row[7]=="theory":
+                                    trec_list.append((row[0], row[1], row[2], row[3],row[4],row1[0], row[6],"TH",row[8],row[9]))
+                                elif row[7]=="practical":
+                                    trec_list.append((row[0], row[1], row[2], row[3],row[4],row1[0], row[6],"PR",row[8],row[9]))
+                                else:
+                                    trec_list.append((row[0], row[1], row[2], row[3],row[4],row1[0], row[6],"TH",row[8],row[9]))
+                              
+                        mycursor.execute("select avg from sgp where teach_id=%s", (row[0],))
+                        a = mycursor.fetchone()            
+                        avg = a[0] * 10
+                        print("average",avg)
+                        result = "{:.2f}".format(avg)
+                        res.append(result)
+                        numeric_result = float(result)
+                        if numeric_result > 90:
+                             remark = "Excellent"
+                        elif numeric_result <= 90 and numeric_result>80:
+                              remark = "Good"
+                        elif numeric_result <= 80 and numeric_result>=70:
+                             remark ="Average"
+                        else:
+                              remark ="Poor"  
+                        rem.append(remark)
+                        print("result1: " , res)
+                        new_list = []
+                        i=0
+                        for tup in trec_list:
+                             new_tup = tup + (res[i], rem[i])
+                             new_list.append(new_tup)
+                             i+=1
+                        # print("ddid it work",trec)
+                        
+            print(new_list)       
+            today = datetime.datetime.now().strftime("%d/%m/%Y")
+            now =  datetime.datetime.now()
+            current_month = now.strftime("%B")
+            current_year = now.strftime("%Y")
+            c_month = int( datetime.datetime.now().strftime("%m"))
+            if 7 <= c_month <= 9:
+                academic_year = f"{ datetime.datetime.now().year}-{str( datetime.datetime.now().year + 1)[2:]}"
+            else:
+                academic_year = f"{ datetime.datetime.now().year - 1}-{str( datetime.datetime.now().year)[2:]}"
+            return render_template('letdown.html',deptnm=deptnm,today=today,facnm=facnm,tinfo=new_list,ay=academic_year,facnms=facnms)
+            
     else:
         return redirect('/')
 
 
 
+@app.route('/letsf', methods=['POST'])
+def letsf ():
+    global post_value
+    if 'logged_in' in session and session['logged_in']:
+        import datetime
+        if request.method == 'POST':
+            mydb.commit()
+            did=request.form['depart']
+            fid = request.form['facid']
+            cursor = mydb.cursor()
+            wid = 1
+            cursor.execute("SELECT part FROM works WHERE id = %s", (wid,))
+            part = cursor.fetchone()
 
+            cursor = mydb.cursor()
+            cursor.execute("SELECT dept_name FROM department WHERE id = %s", (did,))
+            row = cursor.fetchall()
+            deptnm=row[0]
+            mycursor = mydb.cursor()
+            mycursor.execute("select * from facility where id=%s",(fid,))
+            facd = mycursor.fetchall()
+            for fc in facd:
+                facnm = fc[1] + " " +fc[3]
+            today = datetime.datetime.now().strftime("%d/%m/%Y")
+            now =  datetime.datetime.now()
+            current_month = now.strftime("%B")
+            current_year = now.strftime("%Y")
+            c_month = int( datetime.datetime.now().strftime("%m"))
+            if 7 <= c_month <= 9:
+                academic_year = f"{ datetime.datetime.now().year}-{str( datetime.datetime.now().year + 1)[2:]}"
+            else:
+                academic_year = f"{ datetime.datetime.now().year - 1}-{str( datetime.datetime.now().year)[2:]}"
 
+        cursor = mydb.cursor()
+        cursor.execute("select id,dept_name from department")
+        dept= cursor.fetchall()
+        final = []
+
+        dept_list = []
+        dept_list.append("sgp")
+        facnm2 = "sgp"
+        dept_list.append(facnm2)
+        
+        fac_id = fid
+        query1 = '''
+                SELECT 
+                c.short, CASE
+                        WHEN tr.div_id = 0 THEN '--'
+                        ELSE dv.division
+                    END AS division,
+                    s.name_s,
+                    tr.t_p, 
+                ROUND(sgp.q1, 2) as q1, ROUND(sgp.q2, 2) as q2, ROUND(sgp.q3, 2) as q3, 
+                ROUND(sgp.q4, 2) as q4, ROUND(sgp.q5, 2) as q5, ROUND(sgp.q6, 2) as q6, 
+                ROUND(sgp.q7, 2) as q7, ROUND(sgp.q8, 2) as q8, ROUND(sgp.q9, 2) as q9, 
+                ROUND(sgp.q10, 2) as q10, ROUND(sgp.avg, 2) as avg
+                FROM 
+                    teaching_rec tr
+                    JOIN sgp ON tr.id = sgp.teach_id
+                    JOIN class c ON tr.cd_id = c.id
+                    JOIN subject s ON tr.sub_id = s.id
+                    LEFT JOIN division dv ON tr.div_id = dv.id
+                WHERE 
+                    tr.fac_id = %s and sgp.avg<7
+                    ''' 
+        values = (fac_id,)
+        cursor.execute(query1,values)
+        tr=cursor.fetchall()
+                
+        tr_list= []
+        for t in tr:
+                trec=t[0],t[1],t[2],t[3]," feedback: ",t[4],t[5],t[6],t[7],t[8],t[9],t[10],t[11],t[12],t[13]," avg: ",t[14]
+                tr_list.append(trec)
+                
+                # add the tr_list to dept_list
+        dept_list.append(tr_list)   
+                
+        final.append(dept_list)   
+            # add the dept_list to final
+        print(final) 
+                
+
+        mycursor= mydb.cursor()
+        mycursor.execute("select ques from que")
+        questions = mycursor.fetchall()            
+        return render_template('letsf.html',deptnm=deptnm,facnm=facnm,ay=academic_year,part=part,today=today,final=final , que =questions)
+            
+    else:
+        return redirect('/')
+    
+
+@app.route('/letc', methods=['POST'])
+def letc ():
+    global post_value 
+  
+    if 'logged_in' in session and session['logged_in']:
+        import datetime
+        mydb.commit()
+        if request.method == 'POST':
+           
+            did=request.form['depart']
+            fid = request.form['facid']
+            cursor = mydb.cursor()
+            wid = 1
+            cursor.execute("SELECT part FROM works WHERE id = %s", (wid,))
+            part = cursor.fetchone()
+            print(part[0],"aaaaaaaaaa")
+            partq =part[0]
+            if partq == 1:
+                prt = "I"
+                evod ="ODD"
+            else:
+                prt = "II"
+                evod ="EVEN"      
+
+            cursor = mydb.cursor()
+            cursor.execute("SELECT dept_name FROM department WHERE id = %s", (did,))
+            row = cursor.fetchall()
+            deptnm=row[0]
+            mycursor = mydb.cursor()
+            mycursor.execute("select * from facility where id=%s",(fid,))
+            facd = mycursor.fetchall()
+            for fc in facd:
+                facnm = fc[1] + " " +fc[2]
+                facnms = fc[1] + " " + fc[3]
+            mycursor.execute("select id from teaching_rec where dept_id=%s and fac_id=%s ORDER by dept_id,fac_id",(did,fid))
+            teachd = mycursor.fetchall()
+            #print(facnm," ",teachd)
+            ctid = []
+            for t in teachd:
+                #print(t)
+                tid = t[0]
+                   
+                mycursor.execute("select teach_id ,avg from sgp where teach_id=%s and avg<7", (tid,))
+
+                fteach = mycursor.fetchall()
+                if fteach:
+                    ctid.append(fteach[0])
+                    
+                
+          
+            trec_list = []
+            res =[]
+            rem=[]  
+            for x in ctid:
+                   xid = x[0]
+                
+                   mycursor.execute("SELECT teaching_rec.id as tid,facility.pre as fpre,facility.name as fname,subject.name_s as sname,class.short as cls,teaching_rec.div_id as did,teaching_rec.bat_id as bid,teaching_rec.t_p as tp,department.dept_s as dept,subject.name as aname FROM teaching_rec,department,facility,class,subject where teaching_rec.dept_id=department.id AND teaching_rec.cd_id=class.id AND  teaching_rec.sub_id=subject.id AND teaching_rec.fac_id=facility.id AND teaching_rec.id = %s",(xid,))
+                   trec = mycursor.fetchall()
+                  
+                        
+                   #Excellent , good ,average 
+
+                   for row in trec:
+                       
+                        
+                        if str(row[5]) == "0":
+                            
+                            if row[7]=="theory":
+                                trec_list.append((row[0], row[1], row[2], row[3],row[4],"no division", row[6],"TH",row[8],row[9]))
+                            elif row[7]=="practical":
+                                trec_list.append((row[0], row[1], row[2], row[3],row[4],"no division", row[6],"PR",row[8],row[9]))
+                            else:
+                                trec_list.append((row[0], row[1], row[2], row[3],row[4],"no division", row[6],"TH",row[8],row[9]))
+                        else:
+                            idd = row[5]
+                            cursor2 = mydb.cursor()
+                            cursor2.execute("SELECT division FROM division WHERE id=%s", (idd,))
+                            info2 = cursor2.fetchall()
+                            cursor2.close()
+                            for row1 in info2:
+                                if row[7]=="theory":
+                                    trec_list.append((row[0], row[1], row[2], row[3],row[4],row1[0], row[6],"TH",row[8],row[9]))
+                                elif row[7]=="practical":
+                                    trec_list.append((row[0], row[1], row[2], row[3],row[4],row1[0], row[6],"PR",row[8],row[9]))
+                                else:
+                                    trec_list.append((row[0], row[1], row[2], row[3],row[4],row1[0], row[6],"TH",row[8],row[9]))
+                              
+                        mycursor.execute("select avg from sgp where teach_id=%s", (row[0],))
+                        a = mycursor.fetchone()            
+                        avg = a[0] * 10
+                        print("average",avg)
+                        result = "{:.2f}".format(avg)
+                        res.append(result)
+                        numeric_result = float(result)
+                        if numeric_result > 90:
+                             remark = "Excellent"
+                        elif numeric_result <= 90 and numeric_result>80:
+                              remark = "Good"
+                        elif numeric_result <= 80 and numeric_result>=70:
+                             remark ="Average"
+                        else:
+                              remark ="POOR"  
+                        rem.append(remark)
+                        print("result1: " , res)
+                        new_list = []
+                        i=0
+                        for tup in trec_list:
+                             new_tup = tup + (res[i], rem[i])
+                             new_list.append(new_tup)
+                             i+=1
+                        # print("ddid it work",trec)
+                        
+            print(new_list)       
+            today = datetime.datetime.now().strftime("%d/%m/%Y")
+            now =  datetime.datetime.now()
+            current_month = now.strftime("%B")
+            current_year = now.strftime("%Y")
+            c_month = int( datetime.datetime.now().strftime("%m"))
+            if 7 <= c_month <= 9:
+                academic_year = f"{ datetime.datetime.now().year}-{str( datetime.datetime.now().year + 1)[2:]}"
+            else:
+                academic_year = f"{ datetime.datetime.now().year - 1}-{str( datetime.datetime.now().year)[2:]}"  
+            return render_template('letc.html',deptnm=deptnm,facnm=facnm,ay=academic_year,today=today,prt=prt,evod=evod,tinfo=new_list,facnms=facnms)
+            
+    else:
+        return redirect('/')
+      
 #####################Delete databse codes###############################
-'''
-@app.route('/deldiv')
-def deldiv():
+
+@app.route('/deldivbtr')
+def deldivbtr():
     global post_value
     if 'logged_in' in session and session['logged_in']:
         mycursor = mydb.cursor()
         mycursor.execute("DELETE FROM division")
-   
+        mydb.commit()
         mycursor = mydb.cursor()
-        mycursor("Delete From teaching_rec")
-       
+        mycursor.execute("Delete From teaching_rec")
+        mydb.commit()
         mycursor = mydb.cursor()
-        mycursor("Delete From batch")
-        flash('Data Deleted Successfully.', 'success')
+        mycursor.execute("Delete From batch")
+        flash('Division , Batch and Teaching_record Data Deleted Successfully.', 'success1')
+        mydb.commit()
         return redirect('/admin')
     else:
         return redirect('/')
 
-'''
+@app.route('/delfeedcom')
+def delfeedcom():
+    global post_value
+    if 'logged_in' in session and session['logged_in']:
+        mydb.commit()
+        mycursor = mydb.cursor()
+        mycursor.execute("DELETE FROM feedbacknew")
+        mydb.commit()
+        mycursor = mydb.cursor()
+        mycursor.execute("Delete From comments")
+        mydb.commit()
+        flash('Feedback and Comments Data Deleted Successfully.', 'success')
+        mydb.commit()
+        return redirect('/admin')
+    else:
+        return redirect('/')
+    
+@app.route('/delfacd')
+def delfacd():
+    global post_value
+    if 'logged_in' in session and session['logged_in']:
+        mydb.commit()
+        mycursor = mydb.cursor()
+        mycursor.execute("DELETE FROM facility")
+        flash('Faculty Data Deleted Successfully.', 'success2')
+        mydb.commit()
+        return redirect('/admin')
+    else:
+        return redirect('/')    
+    
+@app.route('/delsubd')
+def delsubd():
+    global post_value
+    if 'logged_in' in session and session['logged_in']:
+        mydb.commit()
+        mycursor = mydb.cursor()
+        mycursor.execute("DELETE FROM subject")
+        flash('Subject Data Deleted Successfully .', 'success3')
+        mydb.commit()
+        return redirect('/admin')
+    else:
+        return redirect('/')      
 
 
 
@@ -1639,6 +2237,9 @@ def deldiv():
 
 
 
+#if __name__ == "__main__":
+ #   app.run(debug=True, port=8000)
+import os
 
-if __name__ == "__main__":
-    app.run(debug=True, port=8000)
+port = int(os.environ.get('PORT', 8000)) # default port is 5000
+app.run(host='0.0.0.0', port=port)

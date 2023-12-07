@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "animate.css": "^4.1.1",
-    "aos": "^2.3.4"
+    "firebase": "^10.4.0"
   }
 }
