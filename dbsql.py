@@ -28,3 +28,23 @@ mycursor.execute("CREATE TABLE Division (id INT AUTO_INCREMENT PRIMARY KEY, name
 
 # Close the database connection
 mydb.close()
+
+
+#CREATE VIEW sgp AS
+#SELECT
+#    teach_id,
+#    AVG(q1) AS q1,
+#    AVG(q2) AS q2,
+#    AVG(q3) AS q3,
+#    AVG(q4) AS q4,
+#    AVG(q5) AS q5,
+#    AVG(q6) AS q6,
+#    AVG(q7) AS q7,
+#    AVG(q8) AS q8,
+#    AVG(q9) AS q9,
+#    AVG(q10) AS q10,
+#    AVG(avg) AS avg
+#FROM
+#    feedbacknew
+#GROUP BY
+#    teach_id;

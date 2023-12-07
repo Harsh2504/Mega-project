@@ -25,14 +25,23 @@ app.secret_key = 'your_secret_key'
 #    print(res)
 
 
+#REgular database connection
+#mydb = mysql.connector.connect(
+#      host="localhost",
+#      user="root",
+#      password="",
+#     database="systemdb"
+#    )
 
+
+
+#online database connection
 mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
-    )
-
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
+)
 
 post_value = None
 did = None
@@ -40,12 +49,18 @@ did = None
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
+   # mydb = mysql.connector.connect(
+   #   host="localhost",
+   #   user="root",
+   #   password="",
+   #   database="systemdb"
+   # )
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
-    )
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
+)
 
     global post_value
     global did
@@ -121,13 +136,18 @@ def backup():
     file_name = db_name + '.sql'
    
 
+   # mydb = mysql.connector.connect(
+    #     host="localhost",
+    #     user="root",
+    #     password=""
+    #)
+
     mydb = mysql.connector.connect(
-         host="localhost",
-         user="root",
-         password=""
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
-
-
 
    
 
@@ -497,11 +517,17 @@ def student():
 
 @app.route('/teaching_record')
 def teaching():
+    #mydb = mysql.connector.connect(
+    #   host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-       host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     global post_value 
     global did 
@@ -1366,11 +1392,17 @@ import json
 
 @app.route('/get-divisionstrec/<dept>/<cls>')
 def get_divisionstrec(dept, cls):
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     cursor2 = mydb.cursor()
     cursor2.execute('SELECT id, division FROM division WHERE dept_id=%s AND cd_id=%s', (dept, cls))
@@ -1381,11 +1413,17 @@ def get_divisionstrec(dept, cls):
 
 @app.route('/get-faculties/<deptId>')
 def get_faculties(deptId):
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     cursor = mydb.cursor()
     cursor.execute('SELECT id, name FROM facility WHERE dept_id=%s', (deptId,))
@@ -1395,11 +1433,17 @@ def get_faculties(deptId):
 
 @app.route('/get-subjects/<deptId>/<st>')
 def get_subjects(deptId ,st):
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     thx='y'
     
@@ -1418,11 +1462,17 @@ def get_subjects(deptId ,st):
 
 @app.route('/get-batches/<dept>/<cls>/<dfn>')
 def get_batches(dept, cls, dfn):
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     if dfn == '':
         dfn1=0
@@ -1437,11 +1487,17 @@ def get_batches(dept, cls, dfn):
 
 @app.route('/delete_trec/<_id>', methods=['POST'])
 def delete_trec(_id):
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     mycursor = mydb.cursor()
     sql = "DELETE FROM teaching_rec WHERE id = %s"
@@ -1454,11 +1510,17 @@ def delete_trec(_id):
 
 @app.route('/add_trec', methods=['POST'])
 def add_trec():
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     if request.method == 'POST':
         dept=request.form['dept']
@@ -1507,11 +1569,17 @@ def add_trec():
 ##########################student login ###########################
 @app.route('/get-divisionssl/<dept>/<cls>')
 def get_divisionssl(dept, cls):
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     cursor2 = mydb.cursor()
     cursor2.execute('SELECT id, division FROM division WHERE dept_id=%s AND cd_id=%s', (dept, cls))
@@ -1524,11 +1592,17 @@ def get_divisionssl(dept, cls):
 
 @app.route('/get-batchessl/<dept>/<cls>/<dfn>')
 def get_batchessl(dept, cls, dfn):
+    #mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
     mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
+    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+    user="uroryarvibbhpbek",
+    password="TM0lYZm0E2KP8Xls2FOs",
+    database="bbpeqoaslwhr2tfolaii",
     )
     if dfn == '':
         dfn1=0
@@ -1548,12 +1622,18 @@ def get_batchessl(dept, cls, dfn):
 def add_feed():
 
     if request.method == 'POST':
+    # mydb = mysql.connector.connect(
+    #  host="localhost",
+    #  user="root",
+    #  password="",
+    #  database="systemdb"
+    #)
      mydb = mysql.connector.connect(
-      host="localhost",
-      user="root",
-      password="",
-      database="systemdb"
-    )
+     host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
+     user="uroryarvibbhpbek",
+     password="TM0lYZm0E2KP8Xls2FOs",
+     database="bbpeqoaslwhr2tfolaii",
+     )
      num = int(request.form['fanum'])
      quesnum = int(request.form['qnum'])
      dept = request.form['dept_id']
@@ -2243,3 +2323,6 @@ import os
 
 port = int(os.environ.get('PORT', 8000)) # default port is 5000
 app.run(host='0.0.0.0', port=port)
+
+
+
