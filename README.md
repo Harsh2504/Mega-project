@@ -1,4 +1,6 @@
 # Mega-project
+Student Feedback System in Python (Flask) with Mysql db
+
 6th sem diploma CSE mega project
 
 
