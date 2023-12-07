@@ -33,46 +33,124 @@
   <button type="submit" name="action"  value="clear"  class="btn btn-outline-danger">Stop</button>
   <br><br>
   <div class="alert alert-warning" role="alert">
-    Feedback is started!!!  Click here to give feedback -----><a href="{{ url_for('student_login') }}" class="alert-link">Student Login Page</a>. 
+    Feedback is started!!!  Click here to give feedback -----><a href="{{ url_for('student_verify') }}" class="alert-link">Student Login Page</a>. 
   </div>
+  <label>LOGIN CODE: (Click on the code to copy it. ) </label>
+  <div style="display: inline-flex; justify-content: center; align-items: center;" class="container" >
+    <h3 class="code" style="margin-right: 5%;" id="copy-code" data-tippy-content="Click to copy">{{cod}} </h3>
+    <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
+    <a href="{{ url_for('reload') }}" class="relo" >
+      <i class="fas fa-sync-alt fa-lg " style="color: #695CFE; font-size: 25px ;"></i>
+    </a>
+  </div>
+  
 {% else %}
   <input type="submit"  class="btn btn-outline-success" value="Start">
 {% endif %}
 
     </form>
-
+     
   
+
+  <div style=" max-width:900px;  margin: 100px auto; background-color: var(--sidebar-color); border-radius: 10px; box-shadow: 0px 0px 100px var(--box-shad);" class="animate__animated animate__fadeInDown animate__delay-1s animate__slow ">
+    <div class="alert alert-warning" style="font-size: 14px;" role="alert"> You must remove feedback data and comments when conducting new or additional feedback in the same semester. </div>
+    <h5>Feedback analysis:</h5>
+    <form action="/delfeedcom" class="container" style="display: flex;  padding:20px 50px ;" >
+      
+      <p  class="h"  >Remove Feedback Report Data ,Comments</p>
+      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
+    </form>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
             {% if category == 'success' %}
          
-                <div class="alert alert-warning" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+                <div class="alert alert-success" style="font-size: 14px; " role="alert"> {{ message }}  </div>
    
             {% endif %}
         {% endfor %}
     {% endif %}
 {% endwith %}
-  <div style=" max-width:900px;  margin: 100px auto; background-color: var(--sidebar-color); border-radius: 10px; box-shadow: 0px 0px 100px var(--box-shad);" class="animate__animated animate__fadeInDown animate__delay-1s animate__slow ">
-    <form action="" class="container" style="display: flex;  padding:20px 50px ; " >
+    <div class="alert alert-warning" style="font-size: 14px;" role="alert"> Use the remove functions below to clear the system for the new semester.<br> <b>***Before deleting Feedback Management Data, delete Feedback Analysis Data above.</b></div>
+    <h5>Feedback Management:</h5>
+    <form action="/deldivbtr" class="container" style="display: flex;  padding:20px 50px ; " >
       <p  class="h" >Remove Division , Batch , Teaching Record Data</p>
       <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
     </form>
-
-    <form action="" class="container" style="display: flex;  padding:20px 50px ;" >
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'success1' %}
+         
+                <div class="alert alert-success" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+   
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+    <form action="/delfacd" class="container" style="display: flex;  padding:20px 50px ;" >
       <p class="h"  >Remove Faculty Data</p  >
       <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
     </form>
-    <form action="" class="container" style="display: flex;  padding:20px 50px ;" >
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'success2' %}
+         
+                <div class="alert alert-success" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+   
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+    <form action="/delsubd" class="container" style="display: flex;  padding:20px 50px ;" >
       <p  class="h"  >Remove Subject Data</p>
       <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
     </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if category == 'success3' %}
+         
+                <div class="alert alert-success" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+   
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<!--<form action="/backup" method="post" class="container" style="display: flex;  padding:20px 50px ; " >
+  <p  class="h" >Feedback Backup</p>
+  <input class="btn btn-outline-success h4b" type="submit" value="Backup">
+</form>
+-->
+  </div>
+  </div>
 
-    <form action="" class="container" style="display: flex;  padding:20px 50px ;" >
-      <p  class="h"  >Remove Feedback Report Data</p>
-      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
-    </form>
-  </div>
-  </div>
+
+  <script src="https://unpkg.com/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/tippy.js@6.3.2/dist/tippy-bundle.umd.min.js"></script>
+  <script>
+  tippy('#copy-code', {
+    content: 'Click to copy',
+    placement: 'bottom',
+    trigger: 'click',
+    onCreate(instance) {
+      instance.setContent('Click to copy');
+    },
+    onTrigger(instance, event) {
+      navigator.clipboard.writeText(instance.reference.textContent.trim())
+        .then(() => {
+          instance.setContent('Code copied');
+          setTimeout(() => {
+            instance.setContent('Click to copy');
+          }, 2000);
+        })
+        .catch((err) => {
+          console.error('Failed to copy:', err);
+          instance.setContent('Failed to copy');
+        });
+    },
+  });
+  </script>
 <!--main body end--> 
 {% endblock body %}

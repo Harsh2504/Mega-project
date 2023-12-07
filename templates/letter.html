@@ -8,7 +8,73 @@
 <!--main body --> 
 <div id="main">
     <h2>Letter</h2>
-    <p>Click on the element below to open the side navigation menu, and push this content to the right.</p>
+    <p>As per reports generated letter's are generated here.</p>
+    <h1>Appreciation letter</h1>
+    {% for row in final %}
+    <div style="border: 1px black solid; text-align: center; " class="container">
+    <h3>{{ row[1] }}</h3>
+    {% for r in row[2] %}
+    <div style=" text-align: left; margin: 20px 0; " class="container">
+      <form target="_blank" method="post" action="/letdown" style="display: flex;justify-content: space-between;align-items: center;flex-wrap: wrap;">
+        <input type="hidden" name="depart" value="{{row[0]}}">
+      <h6 style="margin: 0; flex: 1 0 auto;">{{ r[1] }}</h6>
+      <input type="hidden" name="facid" value="{{r[0]}}">
+      <!--{% for teach in r[2] %}
+        <p>{{ teach }}</p>
+      {% endfor %}-->
+        <input type="submit" value="Download" class="btn btn-info btn-rounded" style=" flex: 0 0 auto;">
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+    {% endfor %}
+
+
+
+    <h1>Stratergy Format</h1>
+    {% for rw in finalsl %}
+    <div style="border: 1px black solid; text-align: center; " class="container">
+    <h3>{{ rw[1] }}</h3>
+    {% for r1 in rw[2] %}
+    <div style=" text-align: left; margin: 20px 0; " class="container">
+      <form target="_blank" method="post" action="/letsf" style="display: flex;justify-content: space-between;align-items: center;flex-wrap: wrap;">
+        <input type="hidden" name="depart" value="{{ rw[0]}}">
+      <h6 style="margin: 0; flex: 1 0 auto;">{{ r1[1] }}</h6>
+      <input type="hidden" name="facid" value="{{r1[0]}}">
+      <!--{% for teach in r1[1] %}
+        <p>{{ teach }}</p>
+      {% endfor %}-->
+      <input type="submit" value="Download" class="btn btn-info btn-rounded"  style=" flex: 0 0 auto;">
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+    {% endfor %}
+
+
+
+
+    <h1>Counseling Form</h1>
+    {% for rw in finalsl %}
+    <div style="border: 1px black solid; text-align: center; " class="container">
+    <h3>{{ rw[1] }}</h3>
+    {% for r1 in rw[2] %}
+    <div style=" text-align: left; margin: 20px 0; " class="container">
+      <form target="_blank" method="post" action="/letc" style="display: flex;justify-content: space-between;align-items: center;flex-wrap: wrap;">
+        <input type="hidden" name="depart" value="{{ rw[0]}}">
+      <h6 style="margin: 0; flex: 1 0 auto;">{{ r1[1] }}</h6>
+      <input type="hidden" name="facid" value="{{r1[0]}}">
+      <!--{% for teach in r1[1] %}
+        <p>{{ teach }}</p>
+      {% endfor %}-->
+      <input type="submit" value="Download" class="btn btn-info btn-rounded"  style=" flex: 0 0 auto;">
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+    {% endfor %}
+
+
 
   </div>
 <!--main body end--> 

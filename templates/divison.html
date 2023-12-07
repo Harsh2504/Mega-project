@@ -49,12 +49,12 @@
 
 
     <caption>List of Divisions</caption>
-    <table class="table caption-top bord" style="  color:var(--tabel-text-color);">
+    <table class="table caption-top bord animate__animated animate__fadeInUp animate__slow" style="  color:var(--tabel-text-color);">
     
       <thead class="tab-dark " >
         <tr>
           <th scope="col">Srno.</th>
-          <th scope="col">ID</th>
+          <!--<th scope="col">ID</th>-->
           <th scope="col">Department</th>
           <th scope="col">Class</th>
           <th scope="col">Division</th>
@@ -67,7 +67,7 @@
         {% for d in div %}
         <tr>
           <th scope="row">{{loop.index}}</th>
-          <td>{{d[0]}}</td>
+          <!--<td>{{d[0]}}</td>-->
           <td>{{d[1]}}</td>
           <td>{{ d[2] }}</td>
           <td>{{ d[3]}}</td>

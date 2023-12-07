@@ -9,7 +9,7 @@
 <!--main body --> 
 <div id="main">
     <h2>Batch</h2>
-    <p>Click on the element below to open the side navigation menu, and push this content to the right.</p>
+    <p>You can add batches as per the divisions set for your department and class respectively.</p>
 
   
     <button id="addButton"  class="btn btn-outline-secondary" type="button">Add</button><br><br>
@@ -49,12 +49,12 @@
 
 
     <caption>List of Batches</caption>
-    <table class="table caption-top bord" style="  color:var(--tabel-text-color);">
+    <table class="table caption-top bord animate__animated animate__fadeInUp animate__slow" style="  color:var(--tabel-text-color);">
     
       <thead class="tab-dark " >
         <tr>
           <th scope="col">Srno.</th>
-          <th scope="col">ID</th>
+          <!--<th scope="col">ID</th>-->
           <th scope="col">Department</th>
           <th scope="col">Class</th>
           <th scope="col">Division</th>
@@ -68,7 +68,7 @@
         {% for b in batch %}
         <tr>
           <th scope="row">{{loop.index}}</th>
-          <td>{{b[0]}}</td>
+          <!--<td>{{b[0]}}</td>-->
           <td>{{b[1]}}</td>
           <td>{{ b[2] }}</td>
           <td>{% if b[3] == "--" %}--{% else %}{{ b[3] }}{% endif %}</td>

@@ -16,7 +16,7 @@ Faculty
 <div id="main">
 
   <h2>Faculty</h2>
-  <p>Click on the element below to open the side navigation menu, and push this content to the right.</p>
+  <p>You can add faculty data for your department here.</p>
   <button id="addButton"  class="btn btn-outline-secondary" type="button">Add</button><br><br>
 
     <div id="formContainer" class="container add-block" style="max-width: 450px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden; display: none;">
@@ -55,7 +55,7 @@ Faculty
         <input type="submit" id="ex" class="btn btn-outline-success" value="add">
       </form>
       <label>Excel Format to add Faculty Data:  </label>
-      <a href="{{ url_for('download_sub_file') }}" class="btn btn-warning btn-sm" >Download </a>
+      <a href="{{ url_for('download_file') }}" class="btn btn-warning btn-sm" >Download </a>
       
     </div>
     
@@ -82,7 +82,7 @@ Faculty
 
     </div>
     <caption>List of Faculties</caption>
-    <table class="table caption-top bord" style="color: var(--table-text-color);">
+    <table class="table caption-top bord animate__animated animate__fadeInUp animate__slow" style="color: var(--table-text-color);">
     
       <thead class="tab-dark">
         <tr>

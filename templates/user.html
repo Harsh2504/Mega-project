@@ -48,11 +48,11 @@
    
 
     <caption>List of Users</caption>
-    <table class="table caption-top bord" style="  color:var(--tabel-text-color);">
+    <table class="table caption-top bord animate__animated animate__fadeInUp animate__slow" style="  color:var(--tabel-text-color);">
     
       <thead class="tab-dark " >
         <tr>
-          <th scope="col">ID</th>
+          <!--<th scope="col">ID</th>-->
           <th scope="col">Name</th>
           <th scope="col">Department</th>
           <th scope="col">Email</th>
@@ -66,7 +66,7 @@
       <tbody>
         {% for user in users %}
         <tr>
-          <td>{{ user[0] }}</td>
+          <!--<td>{{ user[0] }}</td>-->
           <td>{{ user[1] }}</td>
           <td>{{ user[2] }}</td>
           <td>{{ user[3] }}</td>

@@ -7,6 +7,9 @@
 
 <!--main body --> 
 <div id="main">
+  
+  
+
     <h2>Department</h2>
     <p>All department in our college are listed here. You can add new department if you want to.</p>
  
@@ -33,7 +36,7 @@
       <thead class="tab-dark " >
         <tr>
           <th scope="col">Srno.</th>
-          <th scope="col">ID</th>
+         <!-- <th scope="col">ID</th>-->
           <th scope="col">Department</th>
           <th scope="col">Abbrevation</th>
           <th scope="col">Edit</th>
@@ -45,7 +48,7 @@
         {% for d in depart %}
         <tr>
           <th scope="row">{{loop.index}}</th>
-          <td>{{d[0]}}</td>
+          <!--<td>{{d[0]}}</td>-->
           <td>{{ d[1] }}</td>
           <td>{{ d[2]}}</td>
           

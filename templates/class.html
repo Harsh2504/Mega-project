@@ -11,12 +11,12 @@ Class
     <p>Each department has this three classes mentioned below.</p>
 
     <caption>List of Classes</caption>
-    <table class="table caption-top bord" style="  color:var(--tabel-text-color);">
+    <table class="table caption-top bord animate__animated animate__fadeInUp animate__slow" style="  color:var(--tabel-text-color);">
     
       <thead class="tab-dark " >
         <tr>
           <th scope="col">Srno.</th>
-          <th scope="col">ID</th>
+          <!--<th scope="col">ID</th>-->
           <th scope="col">Class</th>
           <th scope="col">Abbrevation</th>
           <th scope="col">Edit</th>
@@ -27,7 +27,7 @@ Class
         {% for cl in cls %}
         <tr>
           <th scope="row">{{loop.index}}</th>
-          <td>{{cl[0]}}</td>
+          <!--<td>{{cl[0]}}</td>-->
           <td>{{ cl[1] }}</td>
           <td>{{ cl[2]}}</td>
           
