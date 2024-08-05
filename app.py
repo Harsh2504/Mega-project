@@ -37,10 +37,10 @@ app.secret_key = 'your_secret_key'
 
 #online database connection
 mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
 )
 
 post_value = None
@@ -56,10 +56,10 @@ def login():
    #   database="systemdb"
    # )
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
 )
 
     global post_value
@@ -143,10 +143,10 @@ def backup():
     #)
 
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
 
    
@@ -524,10 +524,10 @@ def teaching():
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     global post_value 
     global did 
@@ -1399,10 +1399,10 @@ def get_divisionstrec(dept, cls):
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     cursor2 = mydb.cursor()
     cursor2.execute('SELECT id, division FROM division WHERE dept_id=%s AND cd_id=%s', (dept, cls))
@@ -1420,10 +1420,10 @@ def get_faculties(deptId):
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     cursor = mydb.cursor()
     cursor.execute('SELECT id, name FROM facility WHERE dept_id=%s', (deptId,))
@@ -1440,10 +1440,10 @@ def get_subjects(deptId ,st):
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     thx='y'
     
@@ -1469,10 +1469,10 @@ def get_batches(dept, cls, dfn):
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     if dfn == '':
         dfn1=0
@@ -1494,10 +1494,10 @@ def delete_trec(_id):
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     mycursor = mydb.cursor()
     sql = "DELETE FROM teaching_rec WHERE id = %s"
@@ -1517,10 +1517,10 @@ def add_trec():
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     if request.method == 'POST':
         dept=request.form['dept']
@@ -1576,10 +1576,10 @@ def get_divisionssl(dept, cls):
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     cursor2 = mydb.cursor()
     cursor2.execute('SELECT id, division FROM division WHERE dept_id=%s AND cd_id=%s', (dept, cls))
@@ -1599,10 +1599,10 @@ def get_batchessl(dept, cls, dfn):
     #  database="systemdb"
     #)
     mydb = mysql.connector.connect(
-    host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-    user="uroryarvibbhpbek",
-    password="TM0lYZm0E2KP8Xls2FOs",
-    database="bbpeqoaslwhr2tfolaii",
+    host="sql212.infinityfree.com",
+    user="if0_37046720",
+    password="kI3KJFApN8vP",
+    database="if0_37046720_systemdb",
     )
     if dfn == '':
         dfn1=0
@@ -1629,10 +1629,10 @@ def add_feed():
     #  database="systemdb"
     #)
      mydb = mysql.connector.connect(
-     host="bbpeqoaslwhr2tfolaii-mysql.services.clever-cloud.com",
-     user="uroryarvibbhpbek",
-     password="TM0lYZm0E2KP8Xls2FOs",
-     database="bbpeqoaslwhr2tfolaii",
+     host="sql212.infinityfree.com",
+     user="if0_37046720",
+     password="kI3KJFApN8vP",
+     database="if0_37046720_systemdb",
      )
      num = int(request.form['fanum'])
      quesnum = int(request.form['qnum'])
