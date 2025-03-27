@@ -8,7 +8,7 @@ import mysql.connector
 import subprocess
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
-
+from dbcon import get_db_connection
 # Connect to the MongoDB server and access the "Users" collection
 # Connect to the MySQL server and access the "users" table
 
@@ -36,12 +36,7 @@ app.secret_key = 'your_secret_key'
 
 
 #online database connection
-mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-)
+mydb = get_db_connection()
 
 post_value = None
 did = None
@@ -55,12 +50,7 @@ def login():
    #   password="",
    #   database="systemdb"
    # )
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-)
+    mydb = get_db_connection()
 
     global post_value
     global did
@@ -108,10 +98,6 @@ def home():
         mycursor.execute(sql)
         result = mycursor.fetchone()
 
-
-
-
-
         if result:
         # Convert the date and time strings to datetime objects
             start_date_time_st = result[0]
@@ -142,16 +128,8 @@ def backup():
     #     password=""
     #)
 
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
-
+    mydb = get_db_connection()
    
-
-    
     # Run mysqldump command to export database to file
     #subprocess.call(['D:\\xampp2\\mysql\\bin\\mysqldump', '-u', 'root', '--password=',"", '--databases',db_name, '--result-file=' + file_name])
 
@@ -407,6 +385,7 @@ def divison():
 
 @app.route('/batch')
 def batch():
+    mydb = get_db_connection()
     global post_value 
     global did
     if 'logged_in' in session and session['logged_in']:
@@ -455,6 +434,7 @@ def batch():
 
 @app.route('/faculty')
 def faculty():
+    mydb = get_db_connection()
     global post_value 
     global did
     if 'logged_in' in session and session['logged_in']:
@@ -523,12 +503,7 @@ def teaching():
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     global post_value 
     global did 
     if 'logged_in' in session and session['logged_in']:
@@ -604,6 +579,8 @@ def questions():
     
 @app.route('/user')
 def user():
+    mydb = get_db_connection()
+
     global post_value
     if 'logged_in' in session and session['logged_in']:
             user=post_value
@@ -631,6 +608,7 @@ def report():
 
 @app.route('/letter')
 def letter():
+    mydb = get_db_connection()
     global post_value
     if 'logged_in' in session and session['logged_in']:
         user=post_value
@@ -644,7 +622,7 @@ def letter():
             did = d[0]
             dept.append(did)
             dept.append(d[1])
-            mycursor.execute("SELECT DISTINCT(fac_id) as fid FROM teaching_rec where dept_id=%s ORDER by dept_id,fac_id",(did,))
+            mycursor.execute("SELECT DISTINCT fac_id, dept_id FROM teaching_rec WHERE dept_id=%s ORDER BY dept_id, fac_id",(did,))
             fac = mycursor.fetchall()
             fac1 =[]
             
@@ -1398,12 +1376,7 @@ def get_divisionstrec(dept, cls):
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     cursor2 = mydb.cursor()
     cursor2.execute('SELECT id, division FROM division WHERE dept_id=%s AND cd_id=%s', (dept, cls))
     div1 = cursor2.fetchall()
@@ -1419,12 +1392,7 @@ def get_faculties(deptId):
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     cursor = mydb.cursor()
     cursor.execute('SELECT id, name FROM facility WHERE dept_id=%s', (deptId,))
     faculties = cursor.fetchall()
@@ -1439,12 +1407,7 @@ def get_subjects(deptId ,st):
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     thx='y'
     
     cursor1 = mydb.cursor()
@@ -1468,12 +1431,7 @@ def get_batches(dept, cls, dfn):
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     if dfn == '':
         dfn1=0
     else:
@@ -1493,12 +1451,7 @@ def delete_trec(_id):
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     mycursor = mydb.cursor()
     sql = "DELETE FROM teaching_rec WHERE id = %s"
     val = (_id,)
@@ -1516,12 +1469,7 @@ def add_trec():
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     if request.method == 'POST':
         dept=request.form['dept']
         cls=request.form['cls']
@@ -1575,12 +1523,7 @@ def get_divisionssl(dept, cls):
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     cursor2 = mydb.cursor()
     cursor2.execute('SELECT id, division FROM division WHERE dept_id=%s AND cd_id=%s', (dept, cls))
     div1 = cursor2.fetchall()
@@ -1598,12 +1541,7 @@ def get_batchessl(dept, cls, dfn):
     #  password="",
     #  database="systemdb"
     #)
-    mydb = mysql.connector.connect(
-    host="sql212.infinityfree.com",
-    user="if0_37046720",
-    password="kI3KJFApN8vP",
-    database="if0_37046720_systemdb",
-    )
+    mydb = get_db_connection()
     if dfn == '':
         dfn1=0
     else:
@@ -1628,12 +1566,7 @@ def add_feed():
     #  password="",
     #  database="systemdb"
     #)
-     mydb = mysql.connector.connect(
-     host="sql212.infinityfree.com",
-     user="if0_37046720",
-     password="kI3KJFApN8vP",
-     database="if0_37046720_systemdb",
-     )
+     mydb = get_db_connection()
      num = int(request.form['fanum'])
      quesnum = int(request.form['qnum'])
      dept = request.form['dept_id']
@@ -1806,11 +1739,13 @@ def showreport():
 
         cursor = mydb.cursor()
         query = '''
-    SELECT d.dept_name, f.name,  c.short, dv.division, s.name_s , tr.t_p, 
-ROUND(sgp.q1, 2) as q1, ROUND(sgp.q2, 2) as q2, ROUND(sgp.q3, 2) as q3, 
-ROUND(sgp.q4, 2) as q4, ROUND(sgp.q5, 2) as q5, ROUND(sgp.q6, 2) as q6, 
-ROUND(sgp.q7, 2) as q7, ROUND(sgp.q8, 2) as q8, ROUND(sgp.q9, 2) as q9, 
-ROUND(sgp.q10, 2) as q10, ROUND(sgp.avg, 2) as avg
+  SELECT d.dept_name, f.name, c.short, dv.division, s.name_s, tr.t_p, 
+    ROUND(AVG(sgp.q1), 2) AS q1, ROUND(AVG(sgp.q2), 2) AS q2, 
+    ROUND(AVG(sgp.q3), 2) AS q3, ROUND(AVG(sgp.q4), 2) AS q4, 
+    ROUND(AVG(sgp.q5), 2) AS q5, ROUND(AVG(sgp.q6), 2) AS q6, 
+    ROUND(AVG(sgp.q7), 2) AS q7, ROUND(AVG(sgp.q8), 2) AS q8, 
+    ROUND(AVG(sgp.q9), 2) AS q9, ROUND(AVG(sgp.q10), 2) AS q10, 
+    ROUND(AVG(sgp.avg), 2) AS avg
 FROM teaching_rec tr
 JOIN facility f ON tr.fac_id = f.id
 JOIN department d ON tr.dept_id = d.id
@@ -1818,8 +1753,9 @@ JOIN class c ON tr.cd_id = c.id
 LEFT JOIN division dv ON tr.div_id = dv.id
 JOIN subject s ON tr.sub_id = s.id
 JOIN sgp ON tr.id = sgp.teach_id
-GROUP BY f.name
-ORDER BY d.dept_name, f.name, c.short, dv.division, s.name_s
+GROUP BY d.dept_name, f.name, c.short, dv.division, s.name_s, tr.t_p
+ORDER BY d.dept_name, f.name, c.short, dv.division, s.name_s;
+
     '''
         cursor.execute(query)
         
@@ -2306,23 +2242,9 @@ def delsubd():
         return redirect('/')      
 
 
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
    app.run(debug=True, port=8000)
 #import os
 
 #port = int(os.environ.get('PORT', 8000)) # default port is 5000
 #app.run(host='0.0.0.0', port=port)
-
-
-
