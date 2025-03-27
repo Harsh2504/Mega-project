@@ -11,6 +11,7 @@ def get_db_connection():
             user="3vBMzU5RHaXD1tv.root",
             password="gSY9SiFI0JHWgiR2",
             database="systemdb",
+            connection_timeout=300 # Set connection timeout to 300 seconds
         )
         return connection
     except mysql.connector.Error as error:

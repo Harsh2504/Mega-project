@@ -359,6 +359,7 @@ def class1():
 
 @app.route('/divison')
 def divison():
+    mydb = get_db_connection()
     global post_value 
     global did
     print(post_value) 
