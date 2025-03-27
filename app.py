@@ -41,6 +41,10 @@ mydb = get_db_connection()
 post_value = None
 did = None
 
+@app.route('/keep_alive')
+def keep_alive():
+    return "Server is running and awake!"
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
