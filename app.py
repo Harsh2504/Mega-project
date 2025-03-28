@@ -94,29 +94,35 @@ def login():
 def home():
     global post_value
     if 'logged_in' in session and session['logged_in']:
-        
-        user=post_value
-        mydb.commit()
-        mycursor = mydb.cursor()
-        sql = "SELECT s_time, e_time ,part,code FROM works WHERE work = 'feedback'"
-        mycursor.execute(sql)
-        result = mycursor.fetchone()
+        user = post_value
+        try:
+            mydb = get_db_connection()
+            mycursor = mydb.cursor()
 
-        if result:
-        # Convert the date and time strings to datetime objects
-            start_date_time_st = result[0]
-            end_date_time_st = result[1]
-            part_x = result[2]
-            code1=result[3]
-            try:
-                start_date_time_x = start_date_time_st.isoformat()
-                end_date_time_x = end_date_time_st.isoformat()
-            except AttributeError:
-            # Handle the exception here
-                start_date_time_x = None
-                end_date_time_x = None
-        return render_template('admin.html',user=user,start_date_time_x=start_date_time_x,end_date_time_x=end_date_time_x,part_x=part_x,cod=code1)
-        
+            sql = "SELECT s_time, e_time, part, code FROM works WHERE work = 'feedback'"
+            mycursor.execute(sql)
+            result = mycursor.fetchone()
+
+            if result:
+                start_date_time_st, end_date_time_st, part_x, code1 = result
+                try:
+                    start_date_time_x = start_date_time_st.isoformat() if start_date_time_st else None
+                    end_date_time_x = end_date_time_st.isoformat() if end_date_time_st else None
+                except AttributeError:
+                    start_date_time_x, end_date_time_x = None, None
+            else:
+                start_date_time_x, end_date_time_x, part_x, code1 = None, None, None, None
+
+        except mysql.connector.Error as err:
+            print("Database Error:", err)
+            start_date_time_x, end_date_time_x, part_x, code1 = None, None, None, None
+
+        finally:
+            mycursor.close()
+            mydb.close()
+
+        return render_template('admin.html', user=user, start_date_time_x=start_date_time_x, end_date_time_x=end_date_time_x, part_x=part_x, cod=code1)
+
     else:
         return redirect('/')
     
