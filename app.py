@@ -9,6 +9,10 @@ import subprocess
 import os
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+import pyotp
+import qrcode
+import io
+import base64
 
 # Load environment variables
 load_dotenv()
@@ -98,18 +102,37 @@ def login():
                 password_valid = (stored_password == password)
             
             if password_valid:
-                session['logged_in'] = True
-                session['username'] = email
-                session['name'] = user[2]
-                session['id']=user[0]
-                post_value = session['post'] = user[7]
-                did = session['did']= user[3]
-                session['pre']=user[1]
-                print(post_value)
-                if post_value == 'Admin':
-                     return redirect('/admin')
+                # Check if 2FA is enabled for this user
+                mycursor.execute("SELECT totp_enabled FROM users WHERE id = %s", (user[0],))
+                totp_result = mycursor.fetchone()
+                totp_enabled = totp_result[0] if totp_result else 0
+                
+                if totp_enabled:
+                    # Store temporary session data for 2FA verification
+                    session['pending_2fa_user_id'] = user[0]
+                    session['temp_user_data'] = {
+                        'id': user[0],
+                        'pre': user[1],
+                        'name': user[2],
+                        'dept_id': user[3],
+                        'post': user[7]
+                    }
+                    # Redirect to 2FA verification page
+                    return redirect('/verify_2fa')
                 else:
-                   return redirect('/divison')
+                    # No 2FA - complete login directly
+                    session['logged_in'] = True
+                    session['username'] = email
+                    session['name'] = user[2]
+                    session['id']=user[0]
+                    post_value = session['post'] = user[7]
+                    did = session['did']= user[3]
+                    session['pre']=user[1]
+                    print(post_value)
+                    if post_value == 'Admin':
+                         return redirect('/admin')
+                    else:
+                       return redirect('/divison')
             else:
                 flash('Invalid username or password. Please try again.', 'auth-error')
                 return redirect('/')
@@ -821,7 +844,191 @@ def letter():
 @app.route('/logout')
 def logout():
     session['logged_in'] = False
+    session.pop('pending_2fa_user_id', None)  # Clear any pending 2FA sessions
+    session.pop('temp_user_data', None)
     return redirect('/')
+
+# ======================== 2FA Routes ========================
+
+@app.route('/setup_2fa')
+def setup_2fa():
+    """Initial 2FA setup - generates QR code for Google Authenticator"""
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect('/')
+    
+    mydb = get_db_connection()
+    user_id = session.get('id')
+    
+    # Get user details
+    cursor = mydb.cursor()
+    try:
+        cursor.execute("SELECT email, name, totp_secret, totp_enabled FROM users WHERE id=%s", (user_id,))
+        user_data = cursor.fetchone()
+    except Exception as e:
+        # If columns don't exist yet, show error message
+        flash('Database not configured for 2FA. Please run: db/add_2fa_columns.sql', 'error')
+        print(f"Database error: {e}")
+        return redirect('/admin')
+    
+    if not user_data:
+        flash('User not found.', 'error')
+        return redirect('/admin')
+    
+    email, name, existing_secret, totp_enabled = user_data
+    
+    # Generate new TOTP secret if none exists
+    if not existing_secret:
+        totp_secret = pyotp.random_base32()
+        cursor.execute("UPDATE users SET totp_secret=%s WHERE id=%s", (totp_secret, user_id))
+        mydb.commit()
+    else:
+        totp_secret = existing_secret
+    
+    cursor.close()
+    
+    # Generate QR code
+    totp_uri = pyotp.totp.TOTP(totp_secret).provisioning_uri(
+        name=email,
+        issuer_name="SGI Feedback System"
+    )
+    
+    # Create QR code image
+    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+    qr.add_data(totp_uri)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    # Convert to base64 for HTML display
+    buffer = io.BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+    qr_code_base64 = base64.b64encode(buffer.getvalue()).decode()
+    
+    global post_value
+    return render_template('setup_2fa.html', 
+                         qr_code=qr_code_base64, 
+                         secret=totp_secret,
+                         totp_enabled=totp_enabled,
+                         user=post_value)
+
+@app.route('/verify_2fa_setup', methods=['POST'])
+def verify_2fa_setup():
+    """Verify the 2FA setup by checking the code from authenticator app"""
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect('/')
+    
+    mydb = get_db_connection()
+    user_id = session.get('id')
+    code = request.form.get('code')
+    
+    if not code:
+        flash('Please enter the verification code.', 'error')
+        return redirect('/setup_2fa')
+    
+    # Get user's TOTP secret
+    cursor = mydb.cursor()
+    cursor.execute("SELECT totp_secret FROM users WHERE id=%s", (user_id,))
+    result = cursor.fetchone()
+    
+    if not result or not result[0]:
+        flash('2FA setup not initialized. Please try again.', 'error')
+        return redirect('/setup_2fa')
+    
+    totp_secret = result[0]
+    
+    # Verify the code
+    totp = pyotp.TOTP(totp_secret)
+    if totp.verify(code, valid_window=1):  # Allow 1 time step tolerance (±30 seconds)
+        # Enable 2FA for this user
+        cursor.execute("UPDATE users SET totp_enabled=1 WHERE id=%s", (user_id,))
+        mydb.commit()
+        cursor.close()
+        flash('Two-Factor Authentication has been successfully enabled!', 'success')
+        return redirect('/admin')
+    else:
+        cursor.close()
+        flash('Invalid verification code. Please try again.', 'error')
+        return redirect('/setup_2fa')
+
+@app.route('/disable_2fa', methods=['POST'])
+def disable_2fa():
+    """Disable 2FA for the user"""
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect('/')
+    
+    mydb = get_db_connection()
+    user_id = session.get('id')
+    
+    cursor = mydb.cursor()
+    cursor.execute("UPDATE users SET totp_enabled=0, totp_secret=NULL WHERE id=%s", (user_id,))
+    mydb.commit()
+    cursor.close()
+    
+    flash('Two-Factor Authentication has been disabled.', 'success')
+    return redirect('/admin')
+
+@app.route('/verify_2fa', methods=['GET', 'POST'])
+def verify_2fa():
+    """Verify 2FA code during login"""
+    if request.method == 'GET':
+        # Show 2FA verification page
+        if 'pending_2fa_user_id' not in session:
+            return redirect('/')
+        return render_template('verify_2fa.html')
+    
+    # POST - verify the code
+    if 'pending_2fa_user_id' not in session:
+        flash('Session expired. Please login again.', 'error')
+        return redirect('/')
+    
+    code = request.form.get('code')
+    if not code:
+        flash('Please enter the verification code.', 'error')
+        return redirect('/verify_2fa')
+    
+    mydb = get_db_connection()
+    user_id = session['pending_2fa_user_id']
+    
+    # Get user's TOTP secret
+    cursor = mydb.cursor()
+    cursor.execute("SELECT totp_secret FROM users WHERE id=%s", (user_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    
+    if not result or not result[0]:
+        flash('2FA configuration error. Please contact administrator.', 'error')
+        return redirect('/')
+    
+    totp_secret = result[0]
+    
+    # Verify the code
+    totp = pyotp.TOTP(totp_secret)
+    if totp.verify(code, valid_window=1):
+        # 2FA successful - complete login
+        temp_user_data = session.get('temp_user_data')
+        
+        if temp_user_data:
+            session['logged_in'] = True
+            session['id'] = temp_user_data['id']
+            session['pre'] = temp_user_data['pre']
+            session['name'] = temp_user_data['name']
+            session['post'] = temp_user_data['post']
+            
+            global post_value, did
+            post_value = temp_user_data['post']
+            did = temp_user_data['dept_id']
+            
+            # Clear temporary session data
+            session.pop('pending_2fa_user_id', None)
+            session.pop('temp_user_data', None)
+            
+            flash('Login successful!', 'success')
+            return redirect('/admin')
+    
+    flash('Invalid verification code. Please try again.', 'error')
+    return redirect('/verify_2fa')
+
+# ==================== End of 2FA Routes ====================
 
 @app.route('/feedback', methods=['POST'])
 def feedback():
