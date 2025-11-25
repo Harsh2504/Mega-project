@@ -102,6 +102,8 @@
                     <p>Update Profile</p>
                   </li>
                 </a>
+                  {% endif %}
+                {% if user == "Admin" or user == "Sub-Admin" %}
                 <a href="{{ url_for('setup_2fa') }}" class="sub-link">
                 <li class="sub-item">
                     <span class="material-icons-outlined">security</span>
