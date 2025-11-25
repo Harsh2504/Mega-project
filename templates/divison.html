@@ -2,6 +2,149 @@
 {% block title %}
   Divison
 {% endblock title %}
+{% block head %}
+<style>
+  .table-wrapper {
+    background: var(--sidebar-color);
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 4px 15px var(--box-shad);
+    overflow: hidden;
+    border: 1px solid var(--table-border-color);
+    margin-top: 20px;
+  }
+
+  .table-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--table-border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .table-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--main-head-color);
+    margin: 0;
+  }
+
+  .table-count {
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .modern-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .modern-table thead {
+    background: linear-gradient(135deg, #695CFE 0%, #8b72ff 100%);
+  }
+
+  .modern-table thead th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+  }
+
+  .modern-table tbody tr {
+    background: var(--sidebar-color);
+    border-bottom: 1px solid var(--table-border-color);
+    transition: all 0.2s ease;
+  }
+
+  .modern-table tbody tr:hover {
+    background: var(--primary-color-light);
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px var(--box-shad);
+  }
+
+  .modern-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .modern-table tbody td,
+  .modern-table tbody th {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text-color);
+    border: none;
+  }
+
+  .modern-table tbody th {
+    font-weight: 600;
+    color: var(--main-head-color);
+  }
+
+  .edit-btn {
+    background: rgba(25, 118, 210, 0.1);
+    color: #1976d2;
+    border: 1px solid rgba(25, 118, 210, 0.3);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .edit-btn:hover {
+    background: #1976d2;
+    color: white;
+    border-color: #1976d2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+  }
+
+  .delete-btn {
+    background: rgba(211, 47, 47, 0.1);
+    color: #d32f2f;
+    border: 1px solid rgba(211, 47, 47, 0.3);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .delete-btn:hover {
+    background: #d32f2f;
+    color: white;
+    border-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-color);
+  }
+
+  .empty-state i {
+    font-size: 64px;
+    color: var(--primary-color);
+    opacity: 0.3;
+    margin-bottom: 20px;
+  }
+</style>
+{% endblock head %}
 {% block body %}
     
 
@@ -11,96 +154,126 @@
     <p>You can add division dynamically as per your need as per department and class respectively.</p>
 
 
-    <button id="addButton"  class="btn btn-outline-secondary" type="button">Add</button><br><br>
+    <button id="addButton" class="btn btn-outline-secondary" type="button" style="margin-bottom: 20px;">
+      <i class="fas fa-plus-circle"></i> Add Division
+    </button><br>
 
+    <!-- Improved Minimal Form -->
+    <div id="formContainer" class="container add-block animate__animated animate__fadeInDown animate__fast" style="max-width: 420px; padding: 25px 35px; border-radius: 12px; overflow: hidden; display: none; background: var(--sidebar-color); box-shadow: 0 4px 15px var(--box-shad); border: 1px solid var(--table-border-color);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <h5 style="margin: 0; color: var(--main-head-color); font-weight: 600;">
+          <i class="fas fa-layer-group" style="color: var(--primary-color);"></i> New Division
+        </h5>
+        <button type="button" id="closeForm" style="background: none; border: none; font-size: 24px; color: var(--text-color); cursor: pointer; line-height: 1; padding: 0; transition: var(--tran-03);" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--text-color)'">
+          ×
+        </button>
+      </div>
 
-    
-    <div id="formContainer" class="container add-block" style="max-width: 500px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden; display: none;">
       <form action="/add_div" method="POST">
-        <label>Department</label><br>
-          <select name="deptnm" id="">
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            Department
+          </label>
+          <select name="deptnm" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
             {% for d in dept %}
             <option>{{d[1]}}</option>
             {% endfor %}
-           
-          </select><br>
-        <label>Class</label><br>
-        <select name="clsnm" id="">
-          {% for c in cls %}
-          <option>{{c[1]}}</option>
-          {% endfor %}
-         
-        </select><br>
-        <label>Division</label><br>
-        <select name="divnm" id="">
-          <option>A</option>
-          <option>B</option>
-          <option>C</option>
-          <option>D</option>
-          <option>E</option>
-          <option>F</option>
-          <option>G</option>
-          <option>H</option>
-          <option>I</option>
-        </select><br><br>
-        <input type="submit"  id="ex" class="btn btn-outline-success" value="add"> 
+          </select>
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            Class
+          </label>
+          <select name="clsnm" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+            {% for c in cls %}
+            <option>{{c[1]}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            Division
+          </label>
+          <select name="divnm" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+            <option>A</option>
+            <option>B</option>
+            <option>C</option>
+            <option>D</option>
+            <option>E</option>
+            <option>F</option>
+            <option>G</option>
+            <option>H</option>
+            <option>I</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn btn-outline-success" style="flex: 1; padding: 10px; font-weight: 500; border-radius: 8px;">
+            <i class="fas fa-check"></i> Add Division
+          </button>
+          <button type="button" id="cancelBtn" class="btn btn-outline-secondary" style="padding: 10px 20px; font-weight: 500; border-radius: 8px;">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
       </form>
     </div>
 
 
-    <caption>List of Divisions</caption>
-    <table class="table caption-top bord animate__animated animate__fadeInUp animate__slow" style="  color:var(--tabel-text-color);">
-    
-      <thead class="tab-dark " >
-        <tr>
-          <th scope="col">Srno.</th>
-          <!--<th scope="col">ID</th>-->
-          <th scope="col">Department</th>
-          <th scope="col">Class</th>
-          <th scope="col">Division</th>
-          <th scope="col">Edit</th>
-          <th scope="col">Delete</th>
-         
-        </tr>
-      </thead>
-      <tbody>
-        {% for d in div %}
-        <tr>
-          <th scope="row">{{loop.index}}</th>
-          <!--<td>{{d[0]}}</td>-->
-          <td>{{d[1]}}</td>
-          <td>{{ d[2] }}</td>
-          <td>{{ d[3]}}</td>
-          
-            
-              <td>
-                <form method="post" action="/get_div_data">
+    <div class="table-wrapper animate__animated animate__fadeInUp">
+      <div class="table-header">
+        <h3 class="table-title">List of Divisions</h3>
+        <span class="table-count">{{ div|length }} Division(s)</span>
+      </div>
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">Sr No</th>
+            <th>Department</th>
+            <th style="width: 120px;">Class</th>
+            <th style="width: 100px;">Division</th>
+            <th style="width: 100px; text-align: center;">Edit</th>
+            <th style="width: 100px; text-align: center;">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if div|length > 0 %}
+            {% for d in div %}
+            <tr>
+              <th>{{loop.index}}</th>
+              <td>{{d[1]}}</td>
+              <td>{{ d[2] }}</td>
+              <td>{{ d[3]}}</td>
+              <td style="text-align: center;">
+                <form method="post" action="/get_div_data" style="margin: 0;">
                   <input type="hidden" name="_id" value="{{ d[0]}}">
                   <input type="hidden" name="did" value="{{d[1]}}">
-                  <button type="submit" class="btn btn-outline-secondary btn-sm edit">
-                      <i class="fa fa-pencil"></i>
-                  </button>
-              </form>
-              </td>
-              
-              <td>
-                <form action="{{ url_for('delete_div', _id=d[0]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this division?');">
-                  <button class="btn btn-outline-danger btn-sm" type="submit">
-                    <i class="fa fa-trash"></i>
+                  <button type="submit" class="edit-btn">
+                    <i class="fa fa-pencil"></i> Edit
                   </button>
                 </form>
-                
-          </td>
-            
-     
-          
-        </tr>
-        {% endfor %}
-        
-          
-        </tr>
-      </tbody>
-    </table>
+              </td>
+              <td style="text-align: center;">
+                <form action="{{ url_for('delete_div', _id=d[0]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this division?');" style="margin: 0;">
+                  <button class="delete-btn" type="submit">
+                    <i class="fa fa-trash"></i> Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6" class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No divisions found</p>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}

@@ -3,8 +3,12 @@
   Feedback
 {% endblock title %}
 {% block body %}
-    
-    
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Submitting your feedback...</div>
+</div>
 
 <!--main body --> 
 <div id="main">
@@ -13,7 +17,7 @@
   <h2>Feedback</h2>
   <p>Click on the element below to open the side navigation menu, and push this content to the right.</p>
 <!--hidden values --> 
-<form action="/add_feed" method="post" >
+<form action="/add_feed" method="post" id="feedbackForm" onsubmit="showLoading()">
   <input type="hidden" name="div_id" value="{{ ddid }}">
   <input type="hidden" name="dept_id" value="{{ did }}">
   <input type="hidden" name="cls_id" value="{{ cid }}">
@@ -50,35 +54,47 @@
     D) {{que[q_idx-1][5]}}<br>
 <br>
 
-        <table class="table caption-top bord table-bordered " style="  color:var(--tabel-text-color); font-size: 16px;" >
-    
-          <thead class="tab-dark " >
-            <tr >
-              <th scope="col">Faculty Name</th>
-              <th scope="col">Subject</th>
-              <th scope="col">Subject Type</th>
-              <th scope="col">Options</th>
-
-            </tr>
-          </thead>
-          <tbody>
-            {% for r_idx in range(1, fa|length+1) %}
-            <tr>
-              
-              <td>{{fa[r_idx-1][0]}}{{fa[r_idx-1][1]}}</td>
-              <td>{{fa[r_idx-1][2]}}</td>
-              <td>{{ fa[r_idx-1][3] }}</td>
-              <td class="d-flex sgp-point">
-                <div class="flex-grow-1">A.<input class="w3-radio sgp-pointer" style="margin-right: 10px;margin-top: -5px;" type="radio" required value="A" name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o1"></div>
-                <div class="flex-grow-1">B.<input class="w3-radio sgp-pointer" style="margin-right: 10px;margin-top: -5px;" type="radio" required value="B"  name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o2"></div>
-                <div class="flex-grow-1">C.<input class="w3-radio sgp-pointer" style="margin-right: 10px;margin-top: -5px;" type="radio" required value="C"  name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o3"></div>
-                <div class="flex-grow-1">D.<input class="w3-radio sgp-pointer" style="margin-right: 10px;margin-top: -5px;" type="radio" required value="D"  name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o4"></div>
-            </td> 
-            </tr>
-            {% endfor %}
-            </tr>
-          </tbody>
-        </table>
+        <div class="feedback-table-wrapper">
+          <table class="feedback-modern-table">
+            <thead>
+              <tr>
+                <th>Faculty Name</th>
+                <th>Subject</th>
+                <th>Type</th>
+                <th>Your Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r_idx in range(1, fa|length+1) %}
+              <tr>
+                <td class="faculty-name">{{fa[r_idx-1][0]}} {{fa[r_idx-1][1]}}</td>
+                <td class="subject-name">{{fa[r_idx-1][2]}}</td>
+                <td><span class="type-badge">{{ fa[r_idx-1][3] }}</span></td>
+                <td class="options-cell">
+                  <div class="radio-group">
+                    <label class="radio-option">
+                      <input class="w3-radio" type="radio" required value="A" name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o1">
+                      <span class="radio-label">A</span>
+                    </label>
+                    <label class="radio-option">
+                      <input class="w3-radio" type="radio" required value="B" name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o2">
+                      <span class="radio-label">B</span>
+                    </label>
+                    <label class="radio-option">
+                      <input class="w3-radio" type="radio" required value="C" name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o3">
+                      <span class="radio-label">C</span>
+                    </label>
+                    <label class="radio-option">
+                      <input class="w3-radio" type="radio" required value="D" name="q{{ q_idx }}f{{ r_idx }}" id="q{{ q_idx }}f{{ r_idx }}o4">
+                      <span class="radio-label">D</span>
+                    </label>
+                  </div>
+                </td> 
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
         <div class="text-center">
         {% if  q_idx  < 10 %}
         <button class="btn btn-outline-dark" style="width: 200px;" type="button" onclick="activateNextTab(this)" data-target="#tab{{ q_idx + 1 }}">Next</button>
@@ -90,9 +106,27 @@
       </div>
     {% endfor %}
     <div class="tab-pane fade" id="tab-comments" role="tabpanel">
-      Comments section<br>
-      <textarea name="co" style="margin-left: 10px;" rows="6" class="comment" maxlength="200" required></textarea><br>
-      <input class="btn btn-success" type="submit" value="Submit" >
+      <div class="comments-section">
+        <div class="comments-header">
+          <h4>Additional Comments</h4>
+          <p>Please share any additional feedback or suggestions (Optional)</p>
+        </div>
+        <div class="comments-body">
+          <textarea name="co" id="commentsTextarea" class="modern-textarea" rows="6" maxlength="200" placeholder="Write your comments here... (max 200 characters)"></textarea>
+          <div class="char-counter">
+            <span id="charCount">0</span> / 200 characters
+          </div>
+        </div>
+        <div class="submit-section">
+          <button type="submit" class="submit-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"></polyline>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+            Submit Feedback
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </form>
@@ -102,6 +136,114 @@
 
   <script >
 
+// Show loading overlay when form is submitted
+function showLoading() {
+  document.getElementById('loadingOverlay').classList.add('active');
+  // Clear saved progress after successful submission
+  localStorage.removeItem('feedbackProgress');
+  return true;
+}
+
+// Save progress to localStorage whenever a radio button is clicked
+function saveProgress() {
+  const formData = {};
+  const radioButtons = document.querySelectorAll('input[type="radio"]:checked');
+  radioButtons.forEach(radio => {
+    formData[radio.name] = radio.value;
+  });
+  
+  // Save comments if any
+  const comments = document.querySelector('textarea[name="co"]');
+  if (comments && comments.value) {
+    formData.comments = comments.value;
+  }
+  
+  // Save current active tab
+  const activeTab = document.querySelector('.tab-pane.active');
+  if (activeTab) {
+    formData.activeTab = '#' + activeTab.id;
+  }
+  
+  localStorage.setItem('feedbackProgress', JSON.stringify(formData));
+}
+
+// Restore progress from localStorage on page load
+function restoreProgress() {
+  const savedData = localStorage.getItem('feedbackProgress');
+  if (savedData) {
+    const formData = JSON.parse(savedData);
+    let lastCompletedQuestion = 0;
+    
+    // Restore radio button selections
+    for (const [name, value] of Object.entries(formData)) {
+      if (name === 'comments') {
+        const comments = document.querySelector('textarea[name="co"]');
+        if (comments) comments.value = value;
+      } else if (name === 'activeTab') {
+        // Don't process activeTab here, handle it later
+      } else {
+        const radio = document.querySelector(`input[name="${name}"][value="${value}"]`);
+        if (radio) {
+          radio.checked = true;
+          // Extract question number from name (e.g., "q1f1" -> 1)
+          const questionNum = parseInt(name.match(/q(\d+)/)[1]);
+          if (questionNum > lastCompletedQuestion) {
+            lastCompletedQuestion = questionNum;
+          }
+        }
+      }
+    }
+    
+    // Unlock tabs up to the last completed question
+    for (let i = 1; i <= lastCompletedQuestion; i++) {
+      const tabLink = document.querySelector(`a[href="#tab${i}"]`);
+      if (tabLink) {
+        tabLink.classList.remove('disabled');
+      }
+    }
+    
+    // Restore active tab if saved
+    if (formData.activeTab) {
+      const activeTabLink = document.querySelector(`a[href="${formData.activeTab}"]`);
+      if (activeTabLink) {
+        activeTabLink.classList.remove('disabled');
+        setTimeout(() => {
+          activeTabLink.click();
+        }, 100);
+      }
+    }
+  }
+}
+
+// Attach save progress to all radio buttons and textarea
+window.addEventListener('DOMContentLoaded', function() {
+  // Restore progress on load
+  restoreProgress();
+  
+  // Attach listeners to save progress
+  const radioButtons = document.querySelectorAll('input[type="radio"]');
+  radioButtons.forEach(radio => {
+    radio.addEventListener('change', saveProgress);
+  });
+  
+  const comments = document.querySelector('textarea[name="co"]');
+  if (comments) {
+    comments.addEventListener('input', function() {
+      saveProgress();
+      // Update character counter
+      const charCount = document.getElementById('charCount');
+      if (charCount) {
+        charCount.textContent = this.value.length;
+      }
+    });
+  }
+  
+  // Save active tab when tabs are switched
+  const tabLinks = document.querySelectorAll('.nav-tabs .nav-link');
+  tabLinks.forEach(link => {
+    link.addEventListener('shown.bs.tab', saveProgress);
+  });
+});
 
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({pageLanguage: 'en', includedLanguages: 'en,mr', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
@@ -131,27 +273,41 @@ function changeLanguage(lang) {
 
     var fanumInput = document.getElementById("fanum");
 
-// Get the value of the "fanum" input
-var fanumValue = fanumInput.value;
+    // Get the value of the "fanum" input
+    var fanumValue = fanumInput.value;
 
-// Log the value of "fanum" to the console
-for(j =1 ; j <=fanumValue ;j++ ){
-    // Get the radio button group corresponding to the current question
-    var radioGroupName = "q" + currentTabIndex + "f" + j;
-    var radioGroup = document.getElementsByName(radioGroupName);
-  
-    // Check if the radio button group has a value
-    var hasValue = false;
-    for (var i = 0; i < radioGroup.length; i++) {
-      if (radioGroup[i].checked) {
-        hasValue = true;
-        break;
+    // Check all faculty members for the current question
+    var allFilled = true;
+    var unfilledFaculty = [];
+    
+    for(j = 1; j <= fanumValue; j++) {
+      // Get the radio button group corresponding to the current question and faculty
+      var radioGroupName = "q" + currentTabIndex + "f" + j;
+      var radioGroup = document.getElementsByName(radioGroupName);
+    
+      // Check if THIS specific radio button group has a value
+      var hasValue = false;
+      for (var i = 0; i < radioGroup.length; i++) {
+        if (radioGroup[i].checked) {
+          hasValue = true;
+          break;
+        }
+      }
+      
+      // If this faculty's feedback is missing, mark it
+      if (!hasValue) {
+        allFilled = false;
+        unfilledFaculty.push(j);
       }
     }
-}
-    // If the radio button group does not have a value, display an error message and do not navigate to the next tab
-    if (!hasValue) {
-      alert("Please give feedback for all faculties in question " + currentTabIndex);
+    
+    // If ANY faculty feedback is missing, display an error message and do not navigate to the next tab
+    if (!allFilled) {
+      if (unfilledFaculty.length === 1) {
+        alert("Please give feedback for faculty #" + unfilledFaculty[0] + " in question " + currentTabIndex);
+      } else {
+        alert("Please give feedback for all faculties in question " + currentTabIndex + "\nMissing feedback for faculty: " + unfilledFaculty.join(", "));
+      }
       return;
     }
   

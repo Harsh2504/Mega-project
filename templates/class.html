@@ -2,6 +2,147 @@
 {% block title %}
 Class
 {% endblock title %}
+{% block head %}
+<style>
+  .table-wrapper {
+    background: var(--sidebar-color);
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 4px 15px var(--box-shad);
+    overflow: hidden;
+    border: 1px solid var(--table-border-color);
+    margin-top: 20px;
+  }
+
+  .table-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid var(--table-border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .table-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--main-head-color);
+    margin: 0;
+  }
+
+  .table-count {
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .modern-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .modern-table thead {
+    background: linear-gradient(135deg, #695CFE 0%, #8b72ff 100%);
+  }
+
+  .modern-table thead th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+  }
+
+  .modern-table thead th:first-child {
+    width: 80px;
+  }
+
+  .modern-table thead th:last-child {
+    width: 100px;
+    text-align: center;
+  }
+
+  .modern-table tbody tr {
+    background: var(--sidebar-color);
+    border-bottom: 1px solid var(--table-border-color);
+    transition: all 0.2s ease;
+  }
+
+  .modern-table tbody tr:hover {
+    background: var(--primary-color-light);
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px var(--box-shad);
+  }
+
+  .modern-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .modern-table tbody td,
+  .modern-table tbody th {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text-color);
+    border: none;
+  }
+
+  .modern-table tbody th {
+    font-weight: 600;
+    color: var(--main-head-color);
+  }
+
+  .abbr-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .edit-btn {
+    background: rgba(25, 118, 210, 0.1);
+    color: #1976d2;
+    border: 1px solid rgba(25, 118, 210, 0.3);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .edit-btn:hover {
+    background: #1976d2;
+    color: white;
+    border-color: #1976d2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-color);
+  }
+
+  .empty-state i {
+    font-size: 64px;
+    color: var(--primary-color);
+    opacity: 0.3;
+    margin-bottom: 20px;
+  }
+</style>
+{% endblock head %}
 {% block body %}
     
 
@@ -10,48 +151,48 @@ Class
     <h2>Class</h2>
     <p>Each department has this three classes mentioned below.</p>
 
-    <caption>List of Classes</caption>
-    <table class="table caption-top bord animate__animated animate__fadeInUp animate__slow" style="  color:var(--tabel-text-color);">
-    
-      <thead class="tab-dark " >
-        <tr>
-          <th scope="col">Srno.</th>
-          <!--<th scope="col">ID</th>-->
-          <th scope="col">Class</th>
-          <th scope="col">Abbrevation</th>
-          <th scope="col">Edit</th>
-      
-        </tr>
-      </thead>
-      <tbody>
-        {% for cl in cls %}
-        <tr>
-          <th scope="row">{{loop.index}}</th>
-          <!--<td>{{cl[0]}}</td>-->
-          <td>{{ cl[1] }}</td>
-          <td>{{ cl[2]}}</td>
-          
-            
-              <td>
-                <form method="post" action="/get_cls_data">
+    <div class="table-wrapper animate__animated animate__fadeInUp">
+      <div class="table-header">
+        <h3 class="table-title">List of Classes</h3>
+        <span class="table-count">{{ cls|length }} Class(es)</span>
+      </div>
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Sr No</th>
+            <th>Class</th>
+            <th>Abbreviation</th>
+            <th style="text-align: center;">Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if cls|length > 0 %}
+            {% for cl in cls %}
+            <tr>
+              <th>{{loop.index}}</th>
+              <td>{{ cl[1] }}</td>
+              <td><span class="abbr-badge">{{ cl[2]}}</span></td>
+              <td style="text-align: center;">
+                <form method="post" action="/get_cls_data" style="margin: 0;">
                   <input type="hidden" name="_id" value="{{ cl[0] }}">
-                  <button type="submit" class="btn btn-outline-secondary btn-sm edit">
-                      <i class="fa fa-pencil"></i>
+                  <button type="submit" class="edit-btn">
+                    <i class="fa fa-pencil"></i> Edit
                   </button>
-              </form>
+                </form>
               </td>
-              
-        
-            
-     
-          
-        </tr>
-        {% endfor %}
-        
-          
-        </tr>
-      </tbody>
-    </table>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="4" class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <p>No classes found</p>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
 
   </div>
 <!--main body end--> 

@@ -3,28 +3,176 @@
   Report
 {% endblock title %}
 {% block body %}
-    
+
+<style>
+    #main {
+        padding: 20px 200px;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding: 30px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header h2 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 10px;
+        font-size: 2rem;
+    }
+
+    .page-header p {
+        color: var(--text-color);
+        opacity: 0.8;
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    .report-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+    }
+
+    .report-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .report-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(105, 92, 254, 0.15);
+    }
+
+    .report-card-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #695CFE 0%, #8b72ff 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .report-card-icon i {
+        font-size: 28px;
+        color: white;
+    }
+
+    .report-card h3 {
+        color: var(--text-color);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .report-card p {
+        color: var(--text-color);
+        opacity: 0.7;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    .report-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #695CFE 0%, #8b72ff 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .report-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(105, 92, 254, 0.4);
+    }
+
+    .report-btn i {
+        font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+        .report-cards {
+            grid-template-columns: 1fr;
+        }
+
+        .page-header h2 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
 
 <!--main body --> 
 <div id="main">
-    <h2>Report</h2>
-    <p>You can see report analysis here.</p>
-  
-    <div style=" max-width:700px;  margin: 100px auto; background-color: var(--sidebar-color); border-radius: 10px; box-shadow: 0px 0px 100px var(--box-shad);">
-  
-    <form method="post" action="/showreport" target="_blank"  class="container rh" style="display: flex;  padding:20px 50px ;">
-      <p  class="h" > Feedback report :-  </p>
-      <input class="btn btn-outline-danger h4b"  type="submit" value="View Report">
-    </form>
-  
+    <div class="page-header animate__animated animate__fadeInDown">
+        <h2><i class="fas fa-chart-line"></i> Reports & Analytics</h2>
+        <p>Comprehensive feedback reports, comments, and visual analytics</p>
+    </div>
 
-      <form method="post" action="/showcomments" target="_blank"  class="container rh"  style="display: flex;  padding:20px 50px ;">
-        <p  class="h" > General Comments :-  </p>
+    <div class="report-cards">
+        <!-- Feedback Report Card -->
+        <div class="report-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
+            <div class="report-card-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h3>Feedback Report</h3>
+            <p>Detailed feedback report with ratings for all faculty members across departments, classes, and subjects.</p>
+            <form method="post" action="/showreport" target="_blank">
+                <button type="submit" class="report-btn">
+                    <i class="fas fa-eye"></i> View Report
+                </button>
+            </form>
+        </div>
 
-        <input class="btn btn-outline-danger h4b"  type="submit" value="Show Comments">
-      </form>
-    
-  </div>
-  </div>
+        <!-- Comments Card -->
+        <div class="report-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+            <div class="report-card-icon">
+                <i class="fas fa-comments"></i>
+            </div>
+            <h3>General Comments</h3>
+            <p>View all student comments and feedback organized by department, faculty, and subject divisions.</p>
+            <form method="post" action="/showcomments" target="_blank">
+                <button type="submit" class="report-btn">
+                    <i class="fas fa-comment-dots"></i> Show Comments
+                </button>
+            </form>
+        </div>
+
+        <!-- Analytics Card -->
+        <div class="report-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s;">
+            <div class="report-card-icon">
+                <i class="fas fa-chart-pie"></i>
+            </div>
+            <h3>Visual Analytics</h3>
+            <p>Interactive charts and graphs showing performance trends, department comparisons, and key insights.</p>
+            <form method="post" action="/showanalytics" target="_blank">
+                <button type="submit" class="report-btn">
+                    <i class="fas fa-chart-bar"></i> View Analytics
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 <!--main body end--> 
 {% endblock body %}

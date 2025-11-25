@@ -3,7 +3,209 @@
   Department
 {% endblock title %}
 {% block body %}
-    
+
+<style>
+  .table-wrapper {
+    background: var(--sidebar-color);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px var(--box-shad);
+    margin-top: 25px;
+    overflow: hidden;
+    border: 1px solid var(--table-border-color);
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--table-border-color);
+  }
+
+  .table-header h5 {
+    margin: 0;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .table-count {
+    background: var(--primary-color-light);
+    color: var(--primary-color);
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+  }
+
+  .modern-table thead {
+    background: linear-gradient(135deg, #695CFE 0%, #8b72ff 100%);
+  }
+
+  .modern-table thead th {
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 16px 18px;
+    text-align: left;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .modern-table thead th:first-child {
+    border-top-left-radius: 10px;
+  }
+
+  .modern-table thead th:last-child {
+    border-top-right-radius: 10px;
+  }
+
+  .modern-table tbody tr {
+    background: var(--sidebar-color);
+    transition: all 0.3s ease;
+    border-bottom: 1px solid var(--table-border-color);
+  }
+
+  .modern-table tbody tr:hover {
+    background: var(--primary-color-light);
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px var(--box-shad);
+  }
+
+  .modern-table tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  .modern-table tbody td,
+  .modern-table tbody th {
+    padding: 16px 18px;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    border: none;
+    vertical-align: middle;
+  }
+
+  .modern-table tbody th {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .dept-name {
+    font-weight: 600;
+    color: var(--main-head-color);
+  }
+
+  .dept-abbr {
+    background: var(--primary-color-light);
+    color: var(--primary-color);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: inline-block;
+  }
+
+  .action-btn-form {
+    display: inline-block;
+    margin: 0;
+  }
+
+  .action-btn {
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-weight: 500;
+  }
+
+  .edit-btn {
+    background: rgba(25, 118, 210, 0.1);
+    color: #1976d2;
+    border: 1px solid rgba(25, 118, 210, 0.3);
+  }
+
+  .edit-btn:hover {
+    background: #1976d2;
+    color: white;
+    border-color: #1976d2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+  }
+
+  .delete-btn {
+    background: rgba(211, 47, 47, 0.1);
+    color: #d32f2f;
+    border: 1px solid rgba(211, 47, 47, 0.3);
+  }
+
+  .delete-btn:hover {
+    background: #d32f2f;
+    color: white;
+    border-color: #d32f2f;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.4);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-color);
+    opacity: 0.6;
+  }
+
+  .empty-state i {
+    font-size: 4rem;
+    color: var(--primary-color);
+    opacity: 0.3;
+    margin-bottom: 15px;
+  }
+
+  .empty-state p {
+    font-size: 1.1rem;
+    margin: 10px 0 0 0;
+  }
+
+  @media (max-width: 768px) {
+    .table-wrapper {
+      padding: 15px;
+      overflow-x: auto;
+    }
+
+    .modern-table {
+      font-size: 0.85rem;
+    }
+
+    .modern-table thead th,
+    .modern-table tbody td,
+    .modern-table tbody th {
+      padding: 12px 10px;
+    }
+
+    .table-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  }
+</style>
 
 <!--main body --> 
 <div id="main">
@@ -14,79 +216,111 @@
     <p>All department in our college are listed here. You can add new department if you want to.</p>
  
 
-  <button id="addButton"  class="btn btn-outline-secondary" type="button">Add</button><br><br>
 
-    <div id="formContainer" class="container add-block" style="max-width: 300px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden; display: none;">
+  <button id="addButton" class="btn btn-outline-secondary" type="button" style="margin-bottom: 20px;">
+    <i class="fas fa-plus-circle"></i> Add Department
+  </button><br>
+
+    <!-- Improved Minimal Form -->
+    <div id="formContainer" class="container add-block animate__animated animate__fadeInDown animate__fast" style="max-width: 420px; padding: 25px 35px; border-radius: 12px; overflow: hidden; display: none; background: var(--sidebar-color); box-shadow: 0 4px 15px var(--box-shad); border: 1px solid var(--table-border-color);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <h5 style="margin: 0; color: var(--main-head-color); font-weight: 600;">
+          <i class="fas fa-building" style="color: var(--primary-color);"></i> New Department
+        </h5>
+        <button type="button" id="closeForm" style="background: none; border: none; font-size: 24px; color: var(--text-color); cursor: pointer; line-height: 1; padding: 0; transition: var(--tran-03);" onmouseover="this.style.color='var(--primary-color)'" onmouseout="this.style.color='var(--text-color)'">
+          ×
+        </button>
+      </div>
+
       <form action="/add_dept" method="POST">
-        <label>Department</label><br>
-        <input type="text" name="deptnm" id="" required><br>
-        <label>Abbrevation</label><br>
-        <input type="text" name="deptabbr" id="" required><br>
-      
-        <input type="submit"  id="ex" class="btn btn-outline-success" value="add"> 
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            Department Name
+          </label>
+          <input type="text" name="deptnm" placeholder="e.g., Computer Engineering" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            Abbreviation
+          </label>
+          <input type="text" name="deptabbr" placeholder="e.g., COMP, MECH, CIVIL" required maxlength="10" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color); text-transform: uppercase;" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+          <small style="color: var(--text-color); font-size: 12px; margin-top: 4px; display: block;">Short form (max 10 characters)</small>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn btn-outline-success" style="flex: 1; padding: 10px; font-weight: 500; border-radius: 8px;">
+            <i class="fas fa-check"></i> Add Department
+          </button>
+          <button type="button" id="cancelBtn" class="btn btn-outline-secondary" style="padding: 10px 20px; font-weight: 500; border-radius: 8px;">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
       </form>
     </div>
 
   
    
 
-    <caption>List of Departments</caption>
-    <table class="table caption-top bord animate__animated animate__fadeInUp animate__slow " style="  color:var(--tabel-text-color);">
-    
-      <thead class="tab-dark " >
-        <tr>
-          <th scope="col">Srno.</th>
-         <!-- <th scope="col">ID</th>-->
-          <th scope="col">Department</th>
-          <th scope="col">Abbrevation</th>
-          <th scope="col">Edit</th>
-          <th scope="col">Delete</th>
-         
-        </tr>
-      </thead>
-      <tbody>
-        {% for d in depart %}
-        <tr>
-          <th scope="row">{{loop.index}}</th>
-          <!--<td>{{d[0]}}</td>-->
-          <td>{{ d[1] }}</td>
-          <td>{{ d[2]}}</td>
-          
-            
-              <td>
-                <form method="post" action="/get_dept_data">
-                  <input type="hidden" name="_id" value="{{ d[0]}}">
-                  <button type="submit" class="btn btn-outline-secondary btn-sm edit">
-                      <i class="fa fa-pencil"></i>
-                  </button>
+    <!-- Modern Table Wrapper -->
+    <div class="table-wrapper animate__animated animate__fadeInUp animate__slow">
+      <div class="table-header">
+        <h5>
+          <i class="fas fa-list"></i> Departments List
+        </h5>
+        <span class="table-count">{{ depart|length }} Department{{ 's' if depart|length != 1 else '' }}</span>
+      </div>
+
+      {% if depart %}
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th style="width: 80px;">Sr No.</th>
+            <th>Department</th>
+            <th style="width: 150px;">Abbreviation</th>
+            <th style="width: 100px; text-align: center;">Edit</th>
+            <th style="width: 100px; text-align: center;">Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in depart %}
+          <tr>
+            <th scope="row">{{loop.index}}</th>
+            <td class="dept-name">{{ d[1] }}</td>
+            <td><span class="dept-abbr">{{ d[2]}}</span></td>
+            <td style="text-align: center;">
+              <form method="post" action="/get_dept_data" class="action-btn-form">
+                <input type="hidden" name="_id" value="{{ d[0]}}">
+                <button type="submit" class="action-btn edit-btn">
+                    <i class="fa fa-pencil"></i> Edit
+                </button>
               </form>
-              </td>
-              
-              <td>
-                <form action="{{ url_for('delete_dept', id=d[0]) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this department?');">
-                  <button class="btn btn-outline-danger btn-sm" type="submit">
-                    <i class="fa fa-trash"></i>
-                  </button>
-                </form>
-                
-          </td>
-            
-     
-          
-        </tr>
-        {% endfor %}
-        
-          
-        </tr>
-      </tbody>
-    </table>
+            </td>
+            <td style="text-align: center;">
+              <form action="{{ url_for('delete_dept', id=d[0]) }}" method="POST" class="action-btn-form" onsubmit="return confirm('Are you sure you want to delete this department?');">
+                <button class="action-btn delete-btn" type="submit">
+                  <i class="fa fa-trash"></i> Delete
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">
+        <i class="fas fa-inbox"></i>
+        <p>No departments added yet. Click "Add Department" to get started.</p>
+      </div>
+      {% endif %}
+    </div>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         {% for category, message in messages %}
             {% if category == 'success' %}
          
-                <div class="alert alert-warning" style="font-size: 14px;" role="alert"> {{ message }}  </div>
+                <div class="alert alert-warning" style="font-size: 14px; margin-top: 20px;" role="alert"> {{ message }}  </div>
    
             {% endif %}
         {% endfor %}

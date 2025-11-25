@@ -14,30 +14,551 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
     <link href='https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="https://kit.fontawesome.com/f4cd2fb35d.css" crossorigin="anonymous">  
-    
-    <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-  />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>Comments</title>
+    <title>Student Comments - Feedback Report</title>
+    <style>
+        :root {
+            --primary-color: #695CFE;
+            --primary-light: rgba(105, 92, 254, 0.1);
+            --primary-gradient: linear-gradient(135deg, #695CFE 0%, #8b72ff 100%);
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 8px 30px rgba(105, 92, 254, 0.15);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            padding: 20px 0;
+            color: var(--text-primary);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .page-header h1 {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .comments-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .faculty-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .faculty-section:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .faculty-header {
+            background: var(--primary-gradient);
+            padding: 18px 25px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .faculty-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -5%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .faculty-info {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .faculty-header h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .faculty-header h4 {
+            font-size: 1.05rem;
+            font-weight: 500;
+            margin-bottom: 0;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .faculty-meta {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+        }
+
+        .faculty-meta i {
+            margin-right: 6px;
+        }
+
+        .comments-list {
+            padding: 20px;
+        }
+
+        .comment-count {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .comment-count h5 {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .count-badge {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .comments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 12px;
+        }
+
+        .comment-item {
+            background: #f8f9fa;
+            padding: 14px 18px;
+            border-radius: 8px;
+            border-left: 3px solid var(--primary-color);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .comment-item:hover {
+            background: #f0f1f3;
+            transform: translateX(3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .comment-item::before {
+            content: '"';
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            opacity: 0.08;
+            font-family: Georgia, serif;
+        }
+
+        .comment-text {
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 0.9rem;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
+        }
+
+        .no-comments {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .no-comments i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            margin-bottom: 15px;
+        }
+
+        .no-comments p {
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            opacity: 0.3;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Department Tabs */
+        .department-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-button:hover {
+            background: var(--primary-light);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: var(--primary-gradient);
+            border-color: var(--primary-color);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .tab-button .badge {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .tab-button.active .badge {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .department-content {
+            display: none;
+        }
+
+        .department-content.active {
+            display: block;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 20px;
+            }
+
+            .department-tabs {
+                display: none;
+            }
+
+            .department-content {
+                display: block !important;
+            }
+            
+            .comments-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .faculty-section {
+                page-break-inside: avoid;
+                box-shadow: none;
+                border: 1px solid #ddd;
+                margin-bottom: 20px;
+            }
+
+            .faculty-section:hover {
+                transform: none;
+            }
+
+            .comment-item:hover {
+                transform: none;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .comments-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .faculty-header {
+                padding: 15px 20px;
+            }
+
+            .faculty-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .faculty-header h4 {
+                font-size: 0.95rem;
+            }
+
+            .comments-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comments-list {
+                padding: 15px;
+            }
+
+            .comment-item {
+                padding: 12px 15px;
+            }
+        }
+    </style>
 </head>
-<body >
-    <div class="container-fluid " style=" text-align: center;  color: #3f3f3f; background-color: rgb(183, 221, 255);">
-    {% for c in com %}
-    <div  class=" animate__animated animate__slideInDown animate_slow">
-        <h1>{{c[0]}}</h1>
-        <h3>{{c[1]}}</h3>
-        <h5>Division: {{c[2]}}</h5>
-        </div>
-        <div style=" color: black; text-align: left; border-radius: 10px; background-color: rgb(216, 237, 255);
-        box-shadow: 0px 0px 50px rgb(209, 224, 255) ; padding: 30px 30px;" class="container-fluid animate__animated animate__fadeInDown animate_slow ">
-        {% for x in c[3] %}
-            <b>{{x}}</b><br><hr>
-        {% endfor %}
-        </div>
-        <hr>  
-    {% endfor %}
-</div>
+<body>
+    <!-- Page Header -->
+    <div class="page-header animate__animated animate__fadeInDown">
+        <h1><i class="fas fa-comments"></i> Student Feedback Comments</h1>
+        <p>Comprehensive feedback from students about their learning experience</p>
+    </div>
+
+    <div class="comments-container">
+        {% if com %}
+            <!-- Department Tabs -->
+            <div class="department-tabs animate__animated animate__fadeInDown">
+                <button class="tab-button active" onclick="showDepartment('all')">
+                    <i class="fas fa-th-large"></i> All Departments
+                    <span class="badge">{{ com|length }}</span>
+                </button>
+                {% set departments = {} %}
+                {% for c in com %}
+                    {% set dept_key = c[0] %}
+                    {% if dept_key not in departments %}
+                        {% set _ = departments.update({dept_key: []}) %}
+                    {% endif %}
+                    {% set _ = departments[dept_key].append(c) %}
+                {% endfor %}
+                {% for dept, items in departments.items()|sort %}
+                <button class="tab-button" onclick="showDepartment('{{ dept|replace(' ', '_') }}')">
+                    <i class="fas fa-building"></i> {{ dept }}
+                    <span class="badge">{{ items|length }}</span>
+                </button>
+                {% endfor %}
+            </div>
+
+            <!-- All Departments Content -->
+            <div class="department-content active" id="dept-all">
+            {% for c in com %}
+            <div class="faculty-section animate__animated animate__fadeInUp animate__slow" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+                <!-- Faculty Header -->
+                <div class="faculty-header">
+                    <div class="faculty-info">
+                        <h2><i class="fas fa-building"></i> {{c[0]}}</h2>
+                        <h4><i class="fas fa-book-open"></i> {{c[1]}}</h4>
+                    </div>
+                    <div class="faculty-meta">
+                        <i class="fas fa-layer-group"></i> Division: {{c[2]}}
+                    </div>
+                </div>
+
+                <!-- Comments List -->
+                <div class="comments-list">
+                    {% if c[3] and c[3][0] != "There are no comments available yet!!!!" %}
+                    <div class="comment-count">
+                        <h5><i class="fas fa-comment-dots"></i> Student Comments</h5>
+                        <span class="count-badge">{{ c[3]|length }} comment{{ 's' if c[3]|length != 1 else '' }}</span>
+                    </div>
+                    
+                    <div class="comments-grid">
+                    {% for x in c[3] %}
+                    <div class="comment-item animate__animated animate__fadeIn" style="animation-delay: {{ loop.index0 * 0.05 }}s;">
+                        <p class="comment-text">{{x}}</p>
+                    </div>
+                    {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="no-comments">
+                        <i class="fas fa-inbox"></i>
+                        <p>No comments submitted for this subject</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+
+            <!-- Individual Department Contents -->
+            {% for dept, items in departments.items()|sort %}
+            <div class="department-content" id="dept-{{ dept|replace(' ', '_') }}">
+                {% for c in items %}
+                <div class="faculty-section animate__animated animate__fadeInUp animate__slow">
+                    <!-- Faculty Header -->
+                    <div class="faculty-header">
+                        <div class="faculty-info">
+                            <h2><i class="fas fa-building"></i> {{c[0]}}</h2>
+                            <h4><i class="fas fa-book-open"></i> {{c[1]}}</h4>
+                        </div>
+                        <div class="faculty-meta">
+                            <i class="fas fa-layer-group"></i> Division: {{c[2]}}
+                        </div>
+                    </div>
+
+                    <!-- Comments List -->
+                    <div class="comments-list">
+                        {% if c[3] and c[3][0] != "There are no comments available yet!!!!" %}
+                        <div class="comment-count">
+                            <h5><i class="fas fa-comment-dots"></i> Student Comments</h5>
+                            <span class="count-badge">{{ c[3]|length }} comment{{ 's' if c[3]|length != 1 else '' }}</span>
+                        </div>
+                        
+                        <div class="comments-grid">
+                        {% for x in c[3] %}
+                        <div class="comment-item animate__animated animate__fadeIn">
+                            <p class="comment-text">{{x}}</p>
+                        </div>
+                        {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="no-comments">
+                            <i class="fas fa-inbox"></i>
+                            <p>No comments submitted for this subject</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state animate__animated animate__fadeIn">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>No Feedback Data Available</h3>
+                <p>Student comments will appear here once feedback is submitted</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Department tab switching
+        function showDepartment(deptName) {
+            // Hide all department contents
+            document.querySelectorAll('.department-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected department content
+            const targetContent = document.getElementById('dept-' + deptName);
+            if (targetContent) {
+                targetContent.classList.add('active');
+            }
+            
+            // Activate clicked button
+            event.target.closest('.tab-button').classList.add('active');
+            
+            // Scroll to top of comments
+            document.querySelector('.department-tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Add print button functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate__fadeInUp');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.faculty-section').forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
 </body>
 </html>
