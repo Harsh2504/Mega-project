@@ -1141,7 +1141,16 @@ def get_divisions(dept_id, cls_id):
     cursor.execute('SELECT id, division FROM division WHERE dept_id=%s AND cd_id=%s', (dept_id, cls_id))
     div = cursor.fetchall()
     cursor.close()
-    return render_template('batch.html', div=div)
+    
+    # Return only option elements, not the full template
+    options = ''
+    if div:
+        for row in div:
+            options += f'<option value="{row[0]}">{row[1]}</option>'
+    else:
+        options = '<option value="0">none</option>'
+    
+    return options
 
 @app.route('/add_batch', methods=['POST'])
 def add_batch():
@@ -1189,6 +1198,7 @@ def add_batch():
 @app.route('/delete_batch/<_id>', methods=['POST'])
 
 def delete_batch(_id):
+    mydb = get_db_connection()
     mycursor = mydb.cursor()
     sql = "DELETE FROM batch WHERE id = %s"
     val = (_id,)
