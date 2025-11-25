@@ -11,113 +11,249 @@
   
     <h2 class="animate__animated  animate__fadeInDown animate__slow">Home</h2>
     <p class="animate__animated animate__fadeInDown animate__slow">You can set date and time and manage feedback here.</p>
-    <form method="POST" class=" container add-block animate__animated animate__fadeInDown animate__slow animate__delay-1s" action="/student_login" style="max-width: 450px; height: auto; padding: 20px 50px; border-radius: 10px; overflow:hidden;">
-      <label for="start_date_time">Start Date and Time:</label>
-      <input type="datetime-local" id="start_date_time" name="start_date_time" value="{{ start_date_time_x }}" required><br><br>
-      <label for="end_date_time">End Date and Time:</label>
-      <input type="datetime-local" id="end_date_time" name="end_date_time" value="{{ end_date_time_x }}" required><br><br>
-      <label for="part">Part of semester:</label>
-      <select id="part" name="part" required>
-       {% if part_x==0 %}
-        <option disabled selected value="">Select the part</option>
-        <option value="1" >Part I</option>
-        <option value="2" >Part II</option>
-        {% else %}
-        <option value="1" {% if part_x == 1 %} selected {% endif %}>Part I</option>
-        <option value="2" {% if part_x == 2 %} selected {% endif %}>Part II</option>
-        {% endif %}
-      </select>    <br>
-      <br>
+    
+    <!-- Improved Feedback Scheduling Form -->
+    <form method="POST" class="container add-block animate__animated animate__fadeInDown animate__slow animate__delay-1s" action="/student_login" style="max-width: 520px; padding: 25px 35px; border-radius: 12px; overflow: hidden; background: var(--sidebar-color); box-shadow: 0 4px 15px var(--box-shad); border: 1px solid var(--table-border-color);">
+      <div style="text-align: center; margin-bottom: 25px;">
+        <h4 style="color: var(--main-head-color); font-weight: 600; margin: 0;">
+          <i class="fas fa-calendar-alt" style="color: var(--primary-color);"></i> Feedback Schedule
+        </h4>
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <label for="start_date_time" style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+          <i class="fas fa-play-circle" style="color: var(--primary-color);"></i> Start Date and Time
+        </label>
+        <input type="datetime-local" id="start_date_time" name="start_date_time" value="{{ start_date_time_x }}" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+      </div>
+
+      <div style="margin-bottom: 18px;">
+        <label for="end_date_time" style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+          <i class="fas fa-stop-circle" style="color: var(--primary-color);"></i> End Date and Time
+        </label>
+        <input type="datetime-local" id="end_date_time" name="end_date_time" value="{{ end_date_time_x }}" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <label for="part" style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+          <i class="fas fa-list-ol" style="color: var(--primary-color);"></i> Part of Semester
+        </label>
+        <select id="part" name="part" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+         {% if part_x==0 %}
+          <option disabled selected value="">Select the part</option>
+          <option value="1" >Part I</option>
+          <option value="2" >Part II</option>
+          {% else %}
+          <option value="1" {% if part_x == 1 %} selected {% endif %}>Part I</option>
+          <option value="2" {% if part_x == 2 %} selected {% endif %}>Part II</option>
+          {% endif %}
+        </select>
+      </div>
+
       {% if start_date_time_x and end_date_time_x %}
-  <button type="submit" name="action" value="update"  class="btn btn-outline-info">Update</button>
-  <button type="submit" name="action"  value="clear"  class="btn btn-outline-danger">Stop</button>
-  <br><br>
-  <div class="alert alert-warning" role="alert">
-    Feedback is started!!!  Click here to give feedback -----><a href="{{ url_for('student_verify') }}" class="alert-link">Student Login Page</a>. 
-  </div>
-  <label>LOGIN CODE: (Click on the code to copy it. ) </label>
-  <div style="display: inline-flex; justify-content: center; align-items: center;" class="container" >
-    <h3 class="code" style="margin-right: 5%;" id="copy-code" data-tippy-content="Click to copy">{{cod}} </h3>
-    <script src="https://cdn.lordicon.com/ritcuqlt.js"></script>
-    <a href="{{ url_for('reload') }}" class="relo" >
-      <i class="fas fa-sync-alt fa-lg " style="color: #695CFE; font-size: 25px ;"></i>
-    </a>
-  </div>
-  
-{% else %}
-  <input type="submit"  class="btn btn-outline-success" value="Start">
-{% endif %}
+      <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button type="submit" name="action" value="update" class="btn btn-outline-info" style="flex: 1; padding: 10px; font-weight: 500; border-radius: 8px;">
+          <i class="fas fa-sync-alt"></i> Update
+        </button>
+        <button type="submit" name="action" value="clear" class="btn btn-outline-danger" style="padding: 10px 20px; font-weight: 500; border-radius: 8px;">
+          <i class="fas fa-stop"></i> Stop
+        </button>
+      </div>
+
+      <div class="alert alert-success" role="alert" style="border-left: 4px solid #28a745; background-color: rgba(40, 167, 69, 0.1); color: var(--main-head-color); margin-bottom: 18px;">
+        <i class="fas fa-check-circle"></i> <strong>Feedback is Active!</strong><br>
+        <small>Students can now submit feedback via the <a href="{{ url_for('student_verify') }}" class="alert-link" style="font-weight: 600;">Student Login Page</a></small>
+      </div>
+
+      <div style="padding: 18px; background-color: var(--primary-color-light); border-radius: 8px; border: 2px solid var(--primary-color);">
+        <label style="display: block; margin-bottom: 8px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+          <i class="fas fa-key" style="color: var(--primary-color);"></i> LOGIN CODE
+        </label>
+        <small style="color: var(--text-color); font-size: 12px; display: block; margin-bottom: 10px;">Click on the code to copy it</small>
+        <div style="display: flex; align-items: center; gap: 15px;">
+          <h3 class="code" style="margin: 0; cursor: pointer; color: var(--main-head-color); font-weight: 700; font-size: 28px;" id="copy-code" data-tippy-content="Click to copy">{{cod}}</h3>
+          <a href="{{ url_for('reload') }}" class="relo" style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: var(--sidebar-color); border-radius: 50%; transition: var(--tran-03); border: 2px solid var(--primary-color);" onmouseover="this.style.transform='rotate(180deg)'" onmouseout="this.style.transform='rotate(0deg)'">
+            <i class="fas fa-sync-alt" style="color: var(--primary-color); font-size: 18px;"></i>
+          </a>
+        </div>
+      </div>
+      {% else %}
+      <button type="submit" class="btn btn-outline-success" style="width: 100%; padding: 12px; font-weight: 500; border-radius: 8px; font-size: 16px;">
+        <i class="fas fa-play"></i> Start Feedback Session
+      </button>
+      {% endif %}
 
     </form>
      
   
 
-  <div style=" max-width:900px;  margin: 100px auto; background-color: var(--sidebar-color); border-radius: 10px; box-shadow: 0px 0px 100px var(--box-shad);" class="animate__animated animate__fadeInDown animate__delay-1s animate__slow ">
-    <div class="alert alert-warning" style="font-size: 14px;" role="alert"> You must remove feedback data and comments when conducting new or additional feedback in the same semester. </div>
-    <h5>Feedback analysis:</h5>
-    <form action="/delfeedcom" class="container" style="display: flex;  padding:20px 50px ;" >
+  <!-- Data Management Section with Theme-Matching UI -->
+  <div style="max-width: 1000px; margin: 80px auto; background-color: var(--sidebar-color); border-radius: 15px; box-shadow: 0px 0px 100px var(--box-shad); padding: 30px;" class="animate__animated animate__fadeInDown animate__delay-1s animate__slow">
+    
+    <!-- Section Header -->
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h3 style="color: var(--primary-color); margin-bottom: 10px; font-weight: 600;">
+        <i class="fas fa-database"></i> Data Management Center
+      </h3>
+      <p style="color: var(--text-color); font-size: 14px;">Clear data for new semester or additional feedback sessions</p>
+    </div>
+
+    <!-- Important Notice -->
+    <div class="alert alert-info" style="border-left: 4px solid var(--primary-color); background-color: var(--primary-color-light); color: var(--main-head-color);">
+      <i class="fas fa-info-circle"></i> <strong>Important:</strong> Use these options when starting a new semester or conducting additional feedback in the same semester.
+    </div>
+
+    <!-- Step 1: Clear Feedback Analysis Data -->
+    <div style="margin: 30px 0; padding: 25px; background-color: var(--primary-color-light); border-radius: 10px; border: 2px solid var(--primary-color); opacity: 0.95;">
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <span style="background: linear-gradient(135deg, var(--primary-color) 0%, #8b72ff 100%); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; box-shadow: 0 4px 8px rgba(105, 92, 254, 0.3);">1</span>
+        <h5 style="margin: 0; color: var(--main-head-color); font-weight: 600;">
+          <i class="fas fa-chart-bar" style="color: var(--primary-color);"></i> Clear Feedback Analysis Data
+        </h5>
+      </div>
       
-      <p  class="h"  >Remove Feedback Report Data ,Comments</p>
-      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
-    </form>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
+      <p style="margin-left: 55px; color: var(--text-color); font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
+        Removes all feedback responses and student comments from previous sessions. <br>
+        <strong style="color: var(--main-head-color);">When to use:</strong> Before starting a new feedback collection or at the end of semester.
+      </p>
+
+      <form action="/delfeedcom" style="margin-left: 55px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px; background-color: var(--sidebar-color); border-radius: 8px; border: 1px solid var(--table-border-color); transition: var(--tran-03); box-shadow: 0 2px 4px rgba(0,0,0,0.05);" onmouseover="this.style.boxShadow='0 4px 12px var(--box-shad)'" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)'">
+          <div style="flex: 1;">
+            <strong style="color: var(--main-head-color); font-size: 15px;"><i class="fas fa-trash-alt" style="color: var(--primary-color);"></i> Feedback Reports & Comments</strong>
+            <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-color);">Deletes: Student feedback responses, comment data</p>
+          </div>
+          <button type="submit" class="btn btn-danger" onclick="return confirm('⚠️ Are you sure you want to delete all feedback data and comments?\n\nThis action cannot be undone!');" style="min-width: 130px; font-weight: 500;">
+            <i class="fas fa-trash"></i> Clear Data
+          </button>
+        </div>
+      </form>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
             {% if category == 'success' %}
-         
-                <div class="alert alert-success" style="font-size: 14px; " role="alert"> {{ message }}  </div>
-   
+              <div class="alert alert-success" style="margin: 15px 0 0 55px; font-size: 14px; border-left: 4px solid #28a745;" role="alert">
+                <i class="fas fa-check-circle"></i> {{ message }}
+              </div>
             {% endif %}
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-    <div class="alert alert-warning" style="font-size: 14px;" role="alert"> Use the remove functions below to clear the system for the new semester.<br> <b>***Before deleting Feedback Management Data, delete Feedback Analysis Data above.</b></div>
-    <h5>Feedback Management:</h5>
-    <form action="/deldivbtr" class="container" style="display: flex;  padding:20px 50px ; " >
-      <p  class="h" >Remove Division , Batch , Teaching Record Data</p>
-      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
-    </form>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- Divider -->
+    <div style="display: flex; align-items: center; margin: 40px 0;">
+      <div style="flex: 1; height: 2px; background: linear-gradient(to right, transparent, var(--primary-color), transparent);"></div>
+      <i class="fas fa-chevron-down" style="color: var(--primary-color); margin: 0 15px;"></i>
+      <div style="flex: 1; height: 2px; background: linear-gradient(to right, transparent, var(--primary-color), transparent);"></div>
+    </div>
+
+    <!-- Step 2: Clear Management Data -->
+    <div style="margin: 30px 0; padding: 25px; background-color: var(--primary-color-light); border-radius: 10px; border: 2px solid var(--primary-color); opacity: 0.95;">
+      <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <span style="background: linear-gradient(135deg, var(--primary-color) 0%, #8b72ff 100%); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; box-shadow: 0 4px 8px rgba(105, 92, 254, 0.3);">2</span>
+        <h5 style="margin: 0; color: var(--main-head-color); font-weight: 600;">
+          <i class="fas fa-cogs" style="color: var(--primary-color);"></i> Clear Semester Management Data
+        </h5>
+      </div>
+
+      <div class="alert alert-warning" style="margin-left: 55px; border-left: 4px solid #ffc107; font-size: 13px; background-color: rgba(255, 193, 7, 0.1);">
+        <i class="fas fa-exclamation-triangle"></i> <strong>Important:</strong> Complete <strong>Step 1</strong> before clearing management data below.
+      </div>
+
+      <p style="margin-left: 55px; color: var(--text-color); font-size: 14px; margin-bottom: 20px; line-height: 1.6;">
+        Clear semester-specific data when starting a new academic term. Follow the order below:
+      </p>
+
+      <!-- Division, Batch & Teaching Records -->
+      <form action="/deldivbtr" style="margin: 20px 0 20px 55px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px; background-color: var(--sidebar-color); border-radius: 8px; border: 1px solid var(--table-border-color); transition: var(--tran-03); box-shadow: 0 2px 4px rgba(0,0,0,0.05);" onmouseover="this.style.boxShadow='0 4px 12px var(--box-shad)'" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)'">
+          <div style="flex: 1;">
+            <strong style="color: var(--main-head-color); font-size: 15px;"><i class="fas fa-layer-group" style="color: var(--primary-color);"></i> Divisions, Batches & Teaching Records</strong>
+            <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-color);">Deletes: Class divisions, student batches, faculty teaching assignments</p>
+          </div>
+          <button type="submit" class="btn btn-outline-danger" onclick="return confirm('⚠️ Delete all divisions, batches and teaching records?\n\nThis cannot be undone.');" style="min-width: 130px; font-weight: 500;">
+            <i class="fas fa-eraser"></i> Clear
+          </button>
+        </div>
+      </form>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
             {% if category == 'success1' %}
-         
-                <div class="alert alert-success" style="font-size: 14px;" role="alert"> {{ message }}  </div>
-   
+              <div class="alert alert-success" style="margin: 15px 0 0 55px; font-size: 14px; border-left: 4px solid #28a745;" role="alert">
+                <i class="fas fa-check-circle"></i> {{ message }}
+              </div>
             {% endif %}
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-    <form action="/delfacd" class="container" style="display: flex;  padding:20px 50px ;" >
-      <p class="h"  >Remove Faculty Data</p  >
-      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
-    </form>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- Faculty Data -->
+      <form action="/delfacd" style="margin: 20px 0 20px 55px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px; background-color: var(--sidebar-color); border-radius: 8px; border: 1px solid var(--table-border-color); transition: var(--tran-03); box-shadow: 0 2px 4px rgba(0,0,0,0.05);" onmouseover="this.style.boxShadow='0 4px 12px var(--box-shad)'" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)'">
+          <div style="flex: 1;">
+            <strong style="color: var(--main-head-color); font-size: 15px;"><i class="fas fa-user-tie" style="color: var(--primary-color);"></i> Faculty Data</strong>
+            <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-color);">Deletes: All faculty member records and information</p>
+          </div>
+          <button type="submit" class="btn btn-outline-danger" onclick="return confirm('⚠️ Delete all faculty data?\n\nThis cannot be undone.');" style="min-width: 130px; font-weight: 500;">
+            <i class="fas fa-eraser"></i> Clear
+          </button>
+        </div>
+      </form>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
             {% if category == 'success2' %}
-         
-                <div class="alert alert-success" style="font-size: 14px;" role="alert"> {{ message }}  </div>
-   
+              <div class="alert alert-success" style="margin: 15px 0 0 55px; font-size: 14px; border-left: 4px solid #28a745;" role="alert">
+                <i class="fas fa-check-circle"></i> {{ message }}
+              </div>
             {% endif %}
-        {% endfor %}
-    {% endif %}
-{% endwith %}
-    <form action="/delsubd" class="container" style="display: flex;  padding:20px 50px ;" >
-      <p  class="h"  >Remove Subject Data</p>
-      <input class="btn btn-outline-danger h4b" type="submit" value="Remove">
-    </form>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- Subject Data -->
+      <form action="/delsubd" style="margin: 20px 0 0 55px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 18px; background-color: var(--sidebar-color); border-radius: 8px; border: 1px solid var(--table-border-color); transition: var(--tran-03); box-shadow: 0 2px 4px rgba(0,0,0,0.05);" onmouseover="this.style.boxShadow='0 4px 12px var(--box-shad)'" onmouseout="this.style.boxShadow='0 2px 4px rgba(0,0,0,0.05)'">
+          <div style="flex: 1;">
+            <strong style="color: var(--main-head-color); font-size: 15px;"><i class="fas fa-book" style="color: var(--primary-color);"></i> Subject Data</strong>
+            <p style="margin: 5px 0 0 0; font-size: 13px; color: var(--text-color);">Deletes: All subject and course information</p>
+          </div>
+          <button type="submit" class="btn btn-outline-danger" onclick="return confirm('⚠️ Delete all subject data?\n\nThis cannot be undone.');" style="min-width: 130px; font-weight: 500;">
+            <i class="fas fa-eraser"></i> Clear
+          </button>
+        </div>
+      </form>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
             {% if category == 'success3' %}
-         
-                <div class="alert alert-success" style="font-size: 14px;" role="alert"> {{ message }}  </div>
-   
+              <div class="alert alert-success" style="margin: 15px 0 0 55px; font-size: 14px; border-left: 4px solid #28a745;" role="alert">
+                <i class="fas fa-check-circle"></i> {{ message }}
+              </div>
             {% endif %}
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <!-- Help Section -->
+    <div style="margin-top: 35px; padding: 20px; border-radius: 10px; border: 2px dashed var(--primary-color); background-color: var(--primary-color-light);">
+      <h6 style="color: var(--main-head-color); margin-bottom: 12px; font-weight: 600;">
+        <i class="fas fa-question-circle" style="color: var(--primary-color);"></i> Need Help?
+      </h6>
+      <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: var(--text-color); line-height: 1.8;">
+        <li><strong style="color: var(--main-head-color);">New Semester:</strong> Clear all data (Step 1 → Step 2) and re-enter fresh information</li>
+        <li><strong style="color: var(--main-head-color);">Additional Feedback (Same Semester):</strong> Only clear Step 1 (Feedback Analysis Data)</li>
+        <li><strong style="color: var(--main-head-color);">Faculty Changes:</strong> Only clear Faculty Data, then re-upload updated list</li>
+      </ul>
+    </div>
+  </div>
 <!--<form action="/backup" method="post" class="container" style="display: flex;  padding:20px 50px ; " >
   <p  class="h" >Feedback Backup</p>
   <input class="btn btn-outline-success h4b" type="submit" value="Backup">

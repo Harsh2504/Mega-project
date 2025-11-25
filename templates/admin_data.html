@@ -7,32 +7,66 @@
 
 <!--main body --> 
 <div id="main" >
-    <h2 align="center">Update User Data of {{ data[1] }} {{data[2]}}</h2><br>
-    <div id="editContainer" class="container add-block" style="max-width: 450px; height: auto; padding: 15px 50px; border-radius: 10px; overflow:hidden;">
+    <h2 align="center" style="color: var(--main-head-color); margin-bottom: 30px;">
+      <i class="fas fa-user-edit" style="color: var(--primary-color);"></i> Update User Data
+    </h2>
+    <p align="center" style="color: var(--text-color); margin-bottom: 30px;">Editing profile for <strong style="color: var(--primary-color);">{{ data[1] }} {{data[2]}}</strong></p>
+    
+    <!-- Improved Edit Form -->
+    <div id="editContainer" class="container add-block animate__animated animate__fadeInDown animate__fast" style="max-width: 520px; padding: 25px 35px; border-radius: 12px; overflow: hidden; background: var(--sidebar-color); box-shadow: 0 4px 15px var(--box-shad); border: 1px solid var(--table-border-color); margin: 0 auto;">
       <form action="/set_admin_data" method="POST">
         <input type="hidden" name="_id" value="{{ data[0] }}">
-        <label>Designation :</label><br>
-        <select class="input" name="pre" required  >
-          <option value="Mr." {% if data[1] == 'Mr.' %} selected {% endif %}>Mr.</option>
-          <option value="Ms." {% if data[1] == 'Ms.' %} selected {% endif %}>Ms.</option>
-          <option value="Mrs." {% if data[1] == 'Mrs.' %} selected {% endif %}>Mrs.</option>
-          <option value="Dr." {% if data[1] == 'Dr.' %} selected {% endif %}>Dr.</option>
-        </select><br>
-        <label>Name :</label><br>
-        <input type="text" name="name" value="{{ data[2] }}" minlength="4" pattern="[A-Za-z ]+" required style="width: 250px;"><br>
-        <label>Email :</label><br>
-        <input type="text" name="email" value="{{ data[4] }}" required style="width: 250px;"><br>
-        <label>Number :</label><br>
-        <input type="number" name="num" class="input" value="{{ data[5] }}"  min="7000000000" max="9999999999" required><br>
-        <label>Password :</label><br>
-        <input type="text" name="password" minlength="6" value="{{ data[6] }}" required><br>
-     
         
-        <input type="submit" class="btn btn-outline-success" value="Update" style="margin-right: 20px;"> 
-        <input type="button" class="btn btn-outline-danger" value="Cancel" onclick="location.href='/admin'">
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            <i class="fas fa-user-tag" style="color: var(--primary-color);"></i> Designation
+          </label>
+          <select name="pre" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+            <option value="Mr." {% if data[1] == 'Mr.' %} selected {% endif %}>Mr.</option>
+            <option value="Ms." {% if data[1] == 'Ms.' %} selected {% endif %}>Ms.</option>
+            <option value="Mrs." {% if data[1] == 'Mrs.' %} selected {% endif %}>Mrs.</option>
+            <option value="Dr." {% if data[1] == 'Dr.' %} selected {% endif %}>Dr.</option>
+          </select>
+        </div>
 
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            <i class="fas fa-user" style="color: var(--primary-color);"></i> Name
+          </label>
+          <input type="text" name="name" value="{{ data[2] }}" minlength="4" pattern="[A-Za-z ]+" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            <i class="fas fa-envelope" style="color: var(--primary-color);"></i> Email
+          </label>
+          <input type="email" name="email" value="{{ data[4] }}" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            <i class="fas fa-phone" style="color: var(--primary-color);"></i> Phone Number
+          </label>
+          <input type="number" name="num" value="{{ data[5] }}" min="7000000000" max="9999999999" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+        </div>
+
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
+            <i class="fas fa-lock" style="color: var(--primary-color);"></i> Password
+          </label>
+          <input type="password" name="password" minlength="6" value="{{ data[6] }}" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+          <small style="color: var(--text-color); font-size: 12px; display: block; margin-top: 4px;"><i class="fas fa-info-circle"></i> Minimum 6 characters required</small>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn btn-outline-success" style="flex: 1; padding: 10px; font-weight: 500; border-radius: 8px;">
+            <i class="fas fa-save"></i> Update User
+          </button>
+          <button type="button" class="btn btn-outline-danger" onclick="location.href='/admin'" style="padding: 10px 20px; font-weight: 500; border-radius: 8px;">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
       </form>
-      
     </div>
   
    

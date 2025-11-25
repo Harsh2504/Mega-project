@@ -189,22 +189,50 @@ function tran(){
 
 const addButton = document.getElementById("addButton");
 const formContainer = document.getElementById("formContainer");
+const closeFormBtn = document.getElementById("closeForm");
+const cancelBtn = document.getElementById("cancelBtn");
 
-addButton.addEventListener("click", function() {
-  if (formContainer.style.display === "none") {
-    formContainer.style.display = "block";
-    formContainer.classList.add("slide-in");
-    formContainer.classList.remove("fade-out");
-    addButton.innerText = "Close";
-  } else {
+// Function to close the form
+function closeFormContainer() {
+  if (formContainer) {
     formContainer.classList.remove("slide-in");
     formContainer.classList.add("fade-out");
-    addButton.innerText = "Add";
     setTimeout(() => {
       formContainer.style.display = "none";
+      if (addButton) {
+        addButton.style.display = "inline-block";
+      }
     }, 500);
   }
-});
+}
+
+// Add button click handler
+if (addButton && formContainer) {
+  addButton.addEventListener("click", function() {
+    if (formContainer.style.display === "none" || formContainer.style.display === "") {
+      formContainer.style.display = "block";
+      formContainer.classList.add("slide-in");
+      formContainer.classList.remove("fade-out");
+      addButton.style.display = "none";
+    } else {
+      closeFormContainer();
+    }
+  });
+}
+
+// Close button (X) click handler
+if (closeFormBtn) {
+  closeFormBtn.addEventListener("click", function() {
+    closeFormContainer();
+  });
+}
+
+// Cancel button click handler
+if (cancelBtn) {
+  cancelBtn.addEventListener("click", function() {
+    closeFormContainer();
+  });
+}
 
 
 
