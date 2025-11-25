@@ -175,7 +175,7 @@
           <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
             Department
           </label>
-          <select name="deptnm" id="deptnm" onchange="getDivisions()" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+          <select name="deptnm" id="deptnm" onchange="getDivisions()" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
             {% for d in dept %}
             <option value="{{ d[0] }}">{{ d[1] }}</option>
             {% endfor %}
@@ -186,7 +186,7 @@
           <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
             Class
           </label>
-          <select name="clsnm" id="clsnm" onchange="getDivisions()" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+          <select name="clsnm" id="clsnm" onchange="getDivisions()" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
             {% for c in cls %}
             <option value="{{ c[0] }}">{{ c[1] }}</option>
             {% endfor %}
@@ -197,7 +197,7 @@
           <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
             Division
           </label>
-          <select id="divnm" name="divnm" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+          <select id="divnm" name="divnm" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
             {% if div %}
             {% for row in div %}
                 <option value="{{ row[0] }}">{{ row[1] }}</option>
@@ -212,7 +212,7 @@
           <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
             Batch Name
           </label>
-          <input type="text" name="batch" id="batch" placeholder="e.g., B1, B2, B3" required autocomplete="off" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+          <input type="text" class="input" name="batch" id="batch" placeholder="e.g., B1, B2, B3" autocomplete="off" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
         </div>
 
         <div style="display: flex; gap: 10px;">

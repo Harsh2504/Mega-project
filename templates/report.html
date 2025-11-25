@@ -103,13 +103,34 @@
         gap: 10px;
     }
 
-    .report-btn:hover {
+    .report-btn:hover:not(:disabled) {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(105, 92, 254, 0.4);
     }
 
+    .report-btn:disabled {
+        background: linear-gradient(135deg, #ccc 0%, #ddd 100%);
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
     .report-btn i {
         font-size: 1.1rem;
+    }
+
+    .no-data-message {
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        color: #856404;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: 500;
+    }
+
+    .no-data-message i {
+        margin-right: 8px;
     }
 
     @media (max-width: 768px) {
@@ -130,6 +151,13 @@
         <p>Comprehensive feedback reports, comments, and visual analytics</p>
     </div>
 
+    {% if not has_feedback %}
+    <div class="no-data-message animate__animated animate__fadeIn">
+        <i class="fas fa-info-circle"></i>
+        No feedback data available yet. Please collect student feedback before accessing reports.
+    </div>
+    {% endif %}
+
     <div class="report-cards">
         <!-- Feedback Report Card -->
         <div class="report-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
@@ -139,7 +167,7 @@
             <h3>Feedback Report</h3>
             <p>Detailed feedback report with ratings for all faculty members across departments, classes, and subjects.</p>
             <form method="post" action="/showreport" target="_blank">
-                <button type="submit" class="report-btn">
+                <button type="submit" class="report-btn" {% if not has_feedback %}disabled{% endif %}>
                     <i class="fas fa-eye"></i> View Report
                 </button>
             </form>
@@ -153,7 +181,7 @@
             <h3>General Comments</h3>
             <p>View all student comments and feedback organized by department, faculty, and subject divisions.</p>
             <form method="post" action="/showcomments" target="_blank">
-                <button type="submit" class="report-btn">
+                <button type="submit" class="report-btn" {% if not has_feedback %}disabled{% endif %}>
                     <i class="fas fa-comment-dots"></i> Show Comments
                 </button>
             </form>
@@ -167,7 +195,7 @@
             <h3>Visual Analytics</h3>
             <p>Interactive charts and graphs showing performance trends, department comparisons, and key insights.</p>
             <form method="post" action="/showanalytics" target="_blank">
-                <button type="submit" class="report-btn">
+                <button type="submit" class="report-btn" {% if not has_feedback %}disabled{% endif %}>
                     <i class="fas fa-chart-bar"></i> View Analytics
                 </button>
             </form>

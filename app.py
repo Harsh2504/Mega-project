@@ -169,6 +169,7 @@ def printt():
     
 @app.route('/student_login', methods=['GET', 'POST'])
 def student_login():
+    mydb = get_db_connection()
     
     if request.method == 'POST':
     
@@ -262,6 +263,8 @@ def student_login():
 
 @app.route('/student_verify')
 def student_verify():
+        mydb = get_db_connection()
+        
         mycursor = mydb.cursor()
         sql = "SELECT s_time, e_time FROM works WHERE work = 'feedback'"
         mycursor.execute(sql)
@@ -313,6 +316,8 @@ def verify():
         
 @app.route('/reload')
 def reload():
+        mydb = get_db_connection()
+        
         if 'logged_in' in session and session['logged_in']:
             alphabet = string.ascii_lowercase
             symbol = "&@#!"
@@ -657,7 +662,15 @@ def report():
     global post_value
     if 'logged_in' in session and session['logged_in']:
         user=post_value
-        return render_template('report.html', user=user)
+        
+        # Check if there's any feedback data
+        mydb = get_db_connection()
+        cursor = mydb.cursor()
+        cursor.execute("SELECT COUNT(*) FROM feedbacknew")
+        feedback_count = cursor.fetchone()[0]
+        has_feedback = feedback_count > 0
+        
+        return render_template('report.html', user=user, has_feedback=has_feedback)
     else:
         return redirect('/')           
 
@@ -782,6 +795,7 @@ def logout():
 
 @app.route('/feedback', methods=['POST'])
 def feedback():
+    mydb = get_db_connection()
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM que")
     que_data = mycursor.fetchall()
@@ -832,6 +846,7 @@ def feedback():
 #database scene
 @app.route('/get_admin_data')
 def get_admin_data():
+    mydb = get_db_connection()
     _id = session['id']
 
     mycursor = mydb.cursor()
@@ -848,6 +863,7 @@ def get_admin_data():
 
 @app.route('/set_admin_data', methods=['POST'])
 def set_admin_data():
+    mydb = get_db_connection()
    # get the updated user data from the form
     session['pre']= pre = request.form.get('pre')
     session['name'] = name = request.form.get('name')
@@ -869,6 +885,7 @@ def set_admin_data():
 ##########################user###########################
 @app.route('/add_user', methods=['POST'])
 def add_user():
+    mydb = get_db_connection()
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
@@ -905,6 +922,7 @@ def delete_user(id):
 
 @app.route('/get_user_data', methods=['POST'])
 def get_user_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
 
     mycursor = mydb.cursor()
@@ -922,6 +940,7 @@ def get_user_data():
 
 @app.route('/set_data', methods=['POST'])
 def set_data():
+    mydb = get_db_connection()
    # get the updated user data from the form
     pre = request.form.get('pre')
     name = request.form.get('name')
@@ -959,6 +978,7 @@ def delete_dept(id):
 
 @app.route('/add_dept', methods=['POST'])
 def add_dept():
+    mydb = get_db_connection()
     if request.method == 'POST':
      
         nm = request.form['deptnm']
@@ -972,6 +992,7 @@ def add_dept():
 
 @app.route('/get_dept_data', methods=['POST'])
 def get_dept_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     cur = mydb.cursor()
     cur.execute("SELECT * FROM department WHERE id=%s", (_id,))
@@ -981,6 +1002,7 @@ def get_dept_data():
 
 @app.route('/set_dept_data', methods=['POST'])
 def set_dept_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     nm = request.form.get('deptnm')
     abbr = request.form.get('deptabbr')
@@ -1001,6 +1023,7 @@ def set_dept_data():
  ##########################class ########################### 
 @app.route('/get_cls_data', methods=['POST'])
 def get_cls_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     cur = mydb.cursor()
     cur.execute("SELECT * FROM class WHERE id=%s", (_id,))
@@ -1010,6 +1033,7 @@ def get_cls_data():
 
 @app.route('/set_cls_data', methods=['POST'])
 def set_cls_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
    
     nm = request.form.get('clsnm')
@@ -1033,6 +1057,7 @@ def set_cls_data():
 
 @app.route('/add_div', methods=['POST'])
 def add_div():
+    mydb = get_db_connection()
     if request.method == 'POST':
         dept=request.form['deptnm']
         cls = request.form['clsnm']
@@ -1057,6 +1082,7 @@ def add_div():
 @app.route('/delete_div/<_id>', methods=['POST'])
 
 def delete_div(_id):
+    mydb = get_db_connection()
     mycursor = mydb.cursor()
     sql = "DELETE FROM division WHERE id = %s"
     val = (_id,)
@@ -1068,6 +1094,7 @@ def delete_div(_id):
 
 @app.route('/get_div_data', methods=['POST'])
 def get_div_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     did = request.form.get('did')
 
@@ -1089,6 +1116,7 @@ def get_div_data():
 
 @app.route('/set_div_data', methods=['POST'])
 def set_div_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     dept = request.form.get('department')
     cd = request.form.get('class')
@@ -1108,6 +1136,7 @@ def set_div_data():
 
 @app.route('/get-divisions/<dept_id>/<cls_id>')
 def get_divisions(dept_id, cls_id):
+    mydb = get_db_connection()
     cursor = mydb.cursor()
     cursor.execute('SELECT id, division FROM division WHERE dept_id=%s AND cd_id=%s', (dept_id, cls_id))
     div = cursor.fetchall()
@@ -1116,6 +1145,7 @@ def get_divisions(dept_id, cls_id):
 
 @app.route('/add_batch', methods=['POST'])
 def add_batch():
+    mydb = get_db_connection()
     if request.method == 'POST':
         dept=request.form['deptnm']
         cls = request.form['clsnm']
@@ -1170,6 +1200,7 @@ def delete_batch(_id):
 
 @app.route('/get_batch_data', methods=['POST'])
 def get_batch_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     did = request.form.get('did')
 
@@ -1200,6 +1231,7 @@ def get_batch_data():
 
 @app.route('/set_batch_data', methods=['POST'])
 def set_batch_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     dept = request.form.get('department')
     cd = request.form.get('class')
@@ -1220,6 +1252,7 @@ def set_batch_data():
 ##########################faculty########################### 
 @app.route('/add_fac', methods=['POST'])
 def add_fac():
+    mydb = get_db_connection()
     if request.method == 'POST':
         pre=request.form['pre']
         nm=request.form['name']
@@ -1235,6 +1268,7 @@ def add_fac():
 @app.route('/delete_fac/<_id>', methods=['POST'])
 
 def delete_fac(_id):
+    mydb = get_db_connection()
     mycursor = mydb.cursor()
     sql = "DELETE FROM facility WHERE id = %s"
     val = (_id,)
@@ -1245,6 +1279,7 @@ def delete_fac(_id):
 
 @app.route('/get_fac_data', methods=['POST'])
 def get_fac_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     did = request.form.get('did')
 
@@ -1266,6 +1301,7 @@ def get_fac_data():
 
 @app.route('/set_fac_data', methods=['POST'])
 def set_fac_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     dept = request.form.get('department')
     pre = request.form.get('pre')
@@ -1284,6 +1320,7 @@ def download_file():
 
 @app.route('/up_fac', methods=['POST'])
 def up_fac():
+    mydb = get_db_connection()
     if request.method == 'POST':
       # Get the uploaded Excel file and read it using Pandas
         excel_file = request.files['file']
@@ -1309,6 +1346,7 @@ def up_fac():
 
 @app.route('/delete_que/<id>', methods=['POST'])
 def delete_que(id):
+    mydb = get_db_connection()
     mycursor = mydb.cursor()
     sql = "DELETE FROM que WHERE id = %s"
     val = (id,)
@@ -1319,6 +1357,7 @@ def delete_que(id):
 
 @app.route('/add_que', methods=['POST'])
 def add_que():
+    mydb = get_db_connection()
     if request.method == 'POST':
      
         ques = request.form['ques']
@@ -1340,6 +1379,7 @@ def add_que():
 ##########################subject###########################
 @app.route('/add_sub', methods=['POST'])
 def add_sub():
+    mydb = get_db_connection()
     if request.method == 'POST':
         nm=request.form['subname']
         init=request.form['subinit']
@@ -1359,6 +1399,7 @@ def add_sub():
     
 @app.route('/delete_sub/<_id>', methods=['POST'])
 def delete_sub(_id):
+    mydb = get_db_connection()
     mycursor = mydb.cursor()
     sql = "DELETE FROM subject WHERE id = %s"
     val = (_id,)
@@ -1374,6 +1415,7 @@ def download_sub_file():
 
 @app.route('/up_sub', methods=['POST'])
 def up_sub():
+    mydb = get_db_connection()
     if request.method == 'POST':
         # Get the uploaded Excel file and read it using Pandas
         excel_file = request.files['file']
@@ -1403,6 +1445,7 @@ def up_sub():
     
 @app.route('/get_sub_data', methods=['POST'])
 def get_sub_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
     did = request.form.get('did')
 
@@ -1414,6 +1457,7 @@ def get_sub_data():
 
 @app.route('/set_sub_data', methods=['POST'])
 def set_sub_data():
+    mydb = get_db_connection()
     _id = request.form.get('_id')
    
     nm = request.form.get('name')
@@ -1712,6 +1756,7 @@ def thankyou():
 #########################feedback end ###########################
 @app.route('/showreport', methods=['POST'])
 def showreport():
+    mydb = get_db_connection()
     global post_value
     if 'logged_in' in session and session['logged_in']:
         user = post_value
@@ -1829,6 +1874,7 @@ ORDER BY d.dept_name, f.name, c.short, dv.division, s.name_s;
 def showcomments():
     global post_value
     if 'logged_in' in session and session['logged_in']:
+        mydb = get_db_connection()
         mydb.commit()
 
         # OPTIMIZED: Single query with LEFT JOINs to get all comments (50-100x faster!)
@@ -1882,6 +1928,7 @@ def showcomments():
 def showanalytics():
     global post_value
     if 'logged_in' in session and session['logged_in']:
+        mydb = get_db_connection()
         mydb.commit()
         cursor = mydb.cursor()
         
@@ -1901,6 +1948,11 @@ def showanalytics():
             ORDER BY sgp.avg DESC
         """)
         all_data = cursor.fetchall()
+        
+        # Check if there's any data
+        if not all_data:
+            flash('No feedback data available yet. Please collect feedback first.', 'success')
+            return redirect('/admin')
         
         # Calculate statistics
         total_faculty = len(set([row[1] for row in all_data]))
@@ -1924,7 +1976,7 @@ def showanalytics():
             dept_data[dept].append(row[12])
         
         dept_averages = {dept: round(sum(scores) / len(scores), 2) 
-                        for dept, scores in dept_data.items()}
+                        for dept, scores in dept_data.items() if scores}
         
         dept_chart_data = {
             'labels': list(dept_averages.keys()),
@@ -1958,7 +2010,7 @@ def showanalytics():
         # Question-wise averages
         q_averages = []
         for i in range(2, 12):  # q1 to q10
-            q_avg = round(sum([row[i] for row in all_data]) / len(all_data), 2)
+            q_avg = round(sum([row[i] for row in all_data]) / len(all_data), 2) if all_data else 0
             q_averages.append(q_avg)
         
         question_averages = {
@@ -1975,9 +2027,10 @@ def showanalytics():
         
         faculty_averages = []
         for name, data in faculty_scores.items():
-            avg = round(sum(data['scores']) / len(data['scores']), 2)
-            faculty_averages.append({
-                'name': name,
+            if data['scores']:  # Check if scores list is not empty
+                avg = round(sum(data['scores']) / len(data['scores']), 2)
+                faculty_averages.append({
+                    'name': name,
                 'department': data['dept'],
                 'score': avg
             })
@@ -2022,6 +2075,7 @@ def letdown ():
     if 'logged_in' in session and session['logged_in']:
         import datetime
         if request.method == 'POST':
+            mydb = get_db_connection()
             did=request.form['depart']
             fid = request.form['facid']
 
@@ -2137,6 +2191,7 @@ def letsf ():
     if 'logged_in' in session and session['logged_in']:
         import datetime
         if request.method == 'POST':
+            mydb = get_db_connection()
             mydb.commit()
             did=request.form['depart']
             fid = request.form['facid']
@@ -2228,6 +2283,7 @@ def letc ():
   
     if 'logged_in' in session and session['logged_in']:
         import datetime
+        mydb = get_db_connection()
         mydb.commit()
         if request.method == 'POST':
            
@@ -2355,6 +2411,7 @@ def letc ():
 def deldivbtr():
     global post_value
     if 'logged_in' in session and session['logged_in']:
+        mydb = get_db_connection()
         mycursor = mydb.cursor()
         mycursor.execute("DELETE FROM division")
         mydb.commit()
@@ -2371,6 +2428,7 @@ def deldivbtr():
 
 @app.route('/delfeedcom')
 def delfeedcom():
+    mydb = get_db_connection()
     global post_value
     if 'logged_in' in session and session['logged_in']:
         mydb.commit()
@@ -2388,6 +2446,7 @@ def delfeedcom():
     
 @app.route('/delfacd')
 def delfacd():
+    mydb = get_db_connection()
     global post_value
     if 'logged_in' in session and session['logged_in']:
         mydb.commit()
@@ -2401,6 +2460,7 @@ def delfacd():
     
 @app.route('/delsubd')
 def delsubd():
+    mydb = get_db_connection()
     global post_value
     if 'logged_in' in session and session['logged_in']:
         mydb.commit()
