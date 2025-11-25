@@ -52,10 +52,10 @@
 
         <div style="margin-bottom: 24px;">
           <label style="display: block; margin-bottom: 6px; color: var(--main-head-color); font-weight: 500; font-size: 14px;">
-            <i class="fas fa-lock" style="color: var(--primary-color);"></i> Password
+            <i class="fas fa-lock" style="color: var(--primary-color);"></i> New Password (Optional)
           </label>
-          <input type="password" name="password" minlength="6" value="{{ data[6] }}" required style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
-          <small style="color: var(--text-color); font-size: 12px; display: block; margin-top: 4px;"><i class="fas fa-info-circle"></i> Minimum 6 characters required</small>
+          <input type="password" name="password" minlength="6" value="" placeholder="Leave empty to keep current password" style="width: 100%; padding: 10px 14px; border: 1.5px solid var(--table-border-color); border-radius: 8px; font-size: 14px; transition: var(--tran-03); background: var(--sidebar-color); color: var(--main-head-color);" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px var(--primary-color-light)'" onblur="this.style.borderColor='var(--table-border-color)'; this.style.boxShadow='none'">
+          <small style="color: var(--text-color); font-size: 12px; display: block; margin-top: 4px;"><i class="fas fa-info-circle"></i> Leave empty to keep current password. Minimum 6 characters if changing.</small>
         </div>
 
         <div style="display: flex; gap: 10px;">

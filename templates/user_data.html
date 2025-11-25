@@ -24,8 +24,8 @@
         <input type="text" name="email" value="{{ data[4] }}" required style="width: 250px;"><br>
         <label>Number :</label><br>
         <input type="number" name="num" class="input" value="{{ data[5] }}"  min="7000000000" max="9999999999" required><br>
-        <label>Password :</label><br>
-        <input type="text" name="password" minlength="6" value="{{ data[6] }}" required><br>
+        <label>New Password (Optional):</label><br>
+        <input type="password" name="password" minlength="6" value="" placeholder="Leave empty to keep current password"><br>
         <label>Access :</label><br>
         <select id="access" name="access">
           <option value="Admin" {% if data[7] == 'Admin' %} selected {% endif %}>Admin</option>

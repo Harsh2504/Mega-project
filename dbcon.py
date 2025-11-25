@@ -1,4 +1,9 @@
 import mysql.connector
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 def get_db_connection():
     """
@@ -6,11 +11,11 @@ def get_db_connection():
     """
     try:
         connection = mysql.connector.connect(
-            host="gateway01.us-west-2.prod.aws.tidbcloud.com",
-            port=4000,
-            user="3vBMzU5RHaXD1tv.root",
-            password="gSY9SiFI0JHWgiR2",
-            database="systemdb",
+            host=os.getenv('DB_HOST'),
+            port=int(os.getenv('DB_PORT')),
+            user=os.getenv('DB_USER'),
+            password=os.getenv('DB_PASSWORD'),
+            database=os.getenv('DB_NAME'),
             connection_timeout=300 # Set connection timeout to 300 seconds
         )
         return connection

@@ -3,11 +3,24 @@ from flask import Flask, render_template, Markup, request, redirect, session, fl
 import pandas as pd
 import secrets
 import string
-from datetime import datetime
+from datetime import datetime, timedelta
 import mysql.connector
 import subprocess
+import os
+from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash, check_password_hash
+
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
+app.secret_key = os.getenv('SECRET_KEY', 'fallback-secret-key-change-in-production')
+
+# Session security configuration
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2)
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 from dbcon import get_db_connection
 # Connect to the MongoDB server and access the "Users" collection
 # Connect to the MySQL server and access the "users" table
@@ -60,6 +73,7 @@ def login():
     global did
     session['logged_in'] = False  
     if request.method == 'POST':
+        session.permanent = True  # Enable session timeout
         user=post_value
         email = request.form['email']
         password = request.form['pwd']
@@ -67,22 +81,38 @@ def login():
             flash('Please enter credentials to login.', 'empty-error')
             return redirect('/')
         mycursor = mydb.cursor()
-        mycursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, password))
+        mycursor.execute("SELECT * FROM users WHERE email = %s", (email,))
         user = mycursor.fetchone()
 
+        # Check if user exists and verify password (supports both plain text and hashed)
         if user is not None:
-            session['logged_in'] = True
-            session['username'] = email
-            session['name'] = user[2]
-            session['id']=user[0]
-            post_value = session['post'] = user[7]
-            did = session['did']= user[3]
-            session['pre']=user[1]
-            print(post_value)
-            if post_value == 'Admin':
-                 return redirect('/admin')
+            stored_password = user[6]  # password is at index 6 (NOT 8 which is status)
+            
+            # Try to check as hashed password first, fall back to plain text for migration period
+            password_valid = False
+            if stored_password.startswith('pbkdf2:sha256:') or stored_password.startswith('scrypt:'):
+                # Hashed password
+                password_valid = check_password_hash(stored_password, password)
             else:
-               return redirect('/divison') 
+                # Plain text password (for backward compatibility during migration)
+                password_valid = (stored_password == password)
+            
+            if password_valid:
+                session['logged_in'] = True
+                session['username'] = email
+                session['name'] = user[2]
+                session['id']=user[0]
+                post_value = session['post'] = user[7]
+                did = session['did']= user[3]
+                session['pre']=user[1]
+                print(post_value)
+                if post_value == 'Admin':
+                     return redirect('/admin')
+                else:
+                   return redirect('/divison')
+            else:
+                flash('Invalid username or password. Please try again.', 'auth-error')
+                return redirect('/')
         else:
             flash('Invalid username or password. Please try again.', 'auth-error')
             return redirect('/')
@@ -857,9 +887,12 @@ def get_admin_data():
     cur = mydb.cursor()
     cur.execute("SELECT * FROM users WHERE id=%s", (_id,))
     user_data = cur.fetchone()
+    
+    # Convert to list and remove password (replace with empty string for UI)
+    user_data_safe = list(user_data)
+    user_data_safe[6] = ''  # Don't send hashed password to frontend
   
-  
-    return render_template('admin_data.html', data=user_data, dept=dept_data )
+    return render_template('admin_data.html', data=user_data_safe, dept=dept_data )
 
 @app.route('/set_admin_data', methods=['POST'])
 def set_admin_data():
@@ -873,12 +906,23 @@ def set_admin_data():
 
     _id = request.form.get('_id')
 
-    # update the user data in the database
-    cur = mydb.cursor()
-    cur.execute(
-        "UPDATE users SET pre=%s, name=%s, email=%s, number=%s, password=%s WHERE id=%s",
-        (pre , name, email,num, password,  _id)
-    )
+    # Hash the password before updating (if password is being changed)
+    if password and password.strip():
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        # update the user data in the database with new password
+        cur = mydb.cursor()
+        cur.execute(
+            "UPDATE users SET pre=%s, name=%s, email=%s, number=%s, password=%s WHERE id=%s",
+            (pre , name, email,num, hashed_password,  _id)
+        )
+    else:
+        # update without changing password
+        cur = mydb.cursor()
+        cur.execute(
+            "UPDATE users SET pre=%s, name=%s, email=%s, number=%s WHERE id=%s",
+            (pre , name, email,num, _id)
+        )
+    
     mydb.commit()
     cur.close()
     return redirect('/admin')
@@ -896,6 +940,9 @@ def add_user():
         pswd = request.form['password']
         st = "active"
         
+        # Hash the password before storing
+        hashed_password = generate_password_hash(pswd, method='pbkdf2:sha256')
+        
         if post == 'Admin':
             id = 0
         else:
@@ -905,7 +952,7 @@ def add_user():
             id = row[0]
         
         cursor = mydb.cursor()
-        cursor.execute("INSERT INTO users(pre, name, dept_id, email, number, post, status , password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (pre, name, id, email, num, post, st, pswd))
+        cursor.execute("INSERT INTO users(pre, name, dept_id, email, number, post, status , password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (pre, name, id, email, num, post, st, hashed_password))
         mydb.commit()
         
         return redirect('/user')
@@ -933,9 +980,12 @@ def get_user_data():
     cur = mydb.cursor()
     cur.execute("SELECT * FROM users WHERE id=%s", (_id,))
     user_data = cur.fetchone()
+    
+    # Convert to list and remove password (replace with empty string for UI)
+    user_data_safe = list(user_data)
+    user_data_safe[6] = ''  # Don't send hashed password to frontend
   
-  
-    return render_template('user_data.html', data=user_data, dept=dept_data )
+    return render_template('user_data.html', data=user_data_safe, dept=dept_data )
 
 
 @app.route('/set_data', methods=['POST'])
@@ -951,12 +1001,20 @@ def set_data():
     department = request.form.get('department')
     _id = request.form.get('_id')
 
-    # update the user data in the database
+    # Hash password if provided, otherwise don't update it
     cur = mydb.cursor()
-    cur.execute(
-        "UPDATE users SET pre=%s, name=%s, dept_id=%s, email=%s, number=%s, password=%s, post=%s WHERE id=%s",
-        (pre , name, department , email,num, password, access, _id)
-    )
+    if password and password.strip():
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        cur.execute(
+            "UPDATE users SET pre=%s, name=%s, dept_id=%s, email=%s, number=%s, password=%s, post=%s WHERE id=%s",
+            (pre, name, department, email, num, hashed_password, access, _id)
+        )
+    else:
+        # Update without changing password
+        cur.execute(
+            "UPDATE users SET pre=%s, name=%s, dept_id=%s, email=%s, number=%s, post=%s WHERE id=%s",
+            (pre, name, department, email, num, access, _id)
+        )
     mydb.commit()
     cur.close()
     return redirect('/user')
